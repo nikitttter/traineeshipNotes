@@ -55,7 +55,7 @@ class NoteViewController: UIViewController {
         titleTextField.setContentCompressionResistancePriority(.defaultLow, for: .horizontal)
         titleTextField.setContentHuggingPriority(.defaultHigh, for: .horizontal)
 
-        titleTextField.placeholder = "Заголовок"
+        titleTextField.placeholder = NSLocalizedString("noteTitlePlaceHolder", comment: "")
         titleTextField.font = UIFont.boldSystemFont(ofSize: 22.0)
     }
     
@@ -73,7 +73,7 @@ class NoteViewController: UIViewController {
         doneButton.setContentCompressionResistancePriority(.defaultHigh, for: .horizontal)
         doneButton.setContentHuggingPriority(.defaultLow, for: .horizontal)
         
-        doneButton.setTitle("Готово", for: .normal)
+        doneButton.setTitle(NSLocalizedString("doneButton", comment: ""), for: .normal)
         
         doneButton.addTarget(self, action: #selector(doneButtonTapped), for: .touchUpInside)
     }
