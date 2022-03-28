@@ -98,12 +98,38 @@ class NoteViewController: UIViewController {
         noteTextField.layer.cornerRadius = noteTextField.smallerSide/30
     }
     
+    override func viewDidAppear(_ animated: Bool) {
+        NotificationCenter.default.addObserver(self, selector: #selector(keyboardWasShowen), name: UIResponder.keyboardWillShowNotification, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(keyboardWasHidden), name: UIResponder.keyboardWillHideNotification, object: nil)
+    }
+    
+    override func viewWillDisappear(_ animated: Bool) {
+        NotificationCenter.default.removeObserver(self, name: UIResponder.keyboardWillShowNotification, object: nil)
+        NotificationCenter.default.removeObserver(self, name: UIResponder.keyboardWillHideNotification, object: nil)
+    }
+    
     @objc private func doneButtonTapped() {
         titleTextField.resignFirstResponder()
         noteTextField.resignFirstResponder()
         
         defaults.set(titleTextField.text, forKey: "title")
         defaults.set(noteTextField.text, forKey: "note")
+    }
+    
+    @objc private func keyboardWasShowen(_ notification: Notification) {
+        guard let info = notification.userInfo as NSDictionary? else {
+            return
+        }
+        guard let kbSize = (info.value(forKey: UIResponder.keyboardFrameEndUserInfoKey) as? NSValue)?.cgRectValue.size else {
+            return
+        }
+        
+        let contentInsets = UIEdgeInsets(top: 0.0, left: 0.0, bottom: kbSize.height, right: 0.0)
+        noteTextField.contentInset = contentInsets
+    }
+    
+    @objc private func keyboardWasHidden(_ notification: Notification) {
+        noteTextField.contentInset = UIEdgeInsets.zero
     }
 }
 
