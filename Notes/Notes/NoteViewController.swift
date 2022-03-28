@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import Foundation
 
 class NoteViewController: UIViewController {
     
@@ -14,6 +15,8 @@ class NoteViewController: UIViewController {
     private let noteTextField = UITextView()
     private let headerContainer = UIView()
     
+    private let defaults = UserDefaults.standard
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         self.view.backgroundColor = .lightGray
@@ -21,7 +24,11 @@ class NoteViewController: UIViewController {
         setupTitleField()
         setupDoneButton()
         setupNoteField()
+        
+        titleTextField.text = defaults.value(forKey: "title") as? String
+        noteTextField.text = defaults.value(forKey: "note") as? String
     }
+    
     
    private func setupHeaderContainer() {
         view.addSubview(headerContainer)
@@ -94,6 +101,9 @@ class NoteViewController: UIViewController {
     @objc private func doneButtonTapped() {
         titleTextField.resignFirstResponder()
         noteTextField.resignFirstResponder()
+        
+        defaults.set(titleTextField.text, forKey: "title")
+        defaults.set(noteTextField.text, forKey: "note")
     }
 }
 
