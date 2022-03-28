@@ -11,7 +11,7 @@ import Foundation
 class NoteViewController: UIViewController {
     
     private let titleTextField = UITextField()
-    private let doneButton = UIButton()
+    private let doneButton = UIBarButtonItem()
     private let noteTextField = UITextView()
     private let headerContainer = UIView()
     
@@ -39,7 +39,6 @@ class NoteViewController: UIViewController {
         headerContainer.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor).isActive = true
         
         headerContainer.addSubview(titleTextField)
-        headerContainer.addSubview(doneButton)
     }
     
     private func setupTitleField() {
@@ -50,32 +49,17 @@ class NoteViewController: UIViewController {
         titleTextField.topAnchor.constraint(equalTo: superView.topAnchor).isActive = true
         titleTextField.leadingAnchor.constraint(equalTo: superView.leadingAnchor, constant: 20).isActive = true
         titleTextField.bottomAnchor.constraint(equalTo: superView.bottomAnchor).isActive = true
-        titleTextField.trailingAnchor.constraint(equalTo: doneButton.leadingAnchor, constant: -20).isActive = true
-
-        titleTextField.setContentCompressionResistancePriority(.defaultLow, for: .horizontal)
-        titleTextField.setContentHuggingPriority(.defaultHigh, for: .horizontal)
+        titleTextField.trailingAnchor.constraint(equalTo: superView.trailingAnchor, constant: -20).isActive = true
 
         titleTextField.placeholder = NSLocalizedString("noteTitlePlaceHolder", comment: "")
         titleTextField.font = UIFont.boldSystemFont(ofSize: 22.0)
     }
     
     private func setupDoneButton() {
-        guard let superView = doneButton.superview else {
-            return
-        }
-        doneButton.translatesAutoresizingMaskIntoConstraints = false
-        doneButton.topAnchor.constraint(equalTo: superView.topAnchor).isActive = true
-        doneButton.bottomAnchor.constraint(equalTo: superView.bottomAnchor).isActive = true
-        doneButton.trailingAnchor.constraint(equalTo: superView.trailingAnchor, constant: -20).isActive = true
-        doneButton.heightAnchor.constraint(equalTo: titleTextField.heightAnchor).isActive = true
-        doneButton.widthAnchor.constraint(equalToConstant: 60.0).isActive = true
-        
-        doneButton.setContentCompressionResistancePriority(.defaultHigh, for: .horizontal)
-        doneButton.setContentHuggingPriority(.defaultLow, for: .horizontal)
-        
-        doneButton.setTitle(NSLocalizedString("doneButton", comment: ""), for: .normal)
-        
-        doneButton.addTarget(self, action: #selector(doneButtonTapped), for: .touchUpInside)
+        doneButton.title = NSLocalizedString("doneButton", comment: "")
+        doneButton.target = self
+        doneButton.action = #selector(doneButtonTapped(_:))
+        navigationItem.rightBarButtonItem = doneButton
     }
 
     private func setupNoteField() {
@@ -108,7 +92,7 @@ class NoteViewController: UIViewController {
         NotificationCenter.default.removeObserver(self, name: UIResponder.keyboardWillHideNotification, object: nil)
     }
     
-    @objc private func doneButtonTapped() {
+    @objc private func doneButtonTapped(_ sender: Any) {
         titleTextField.resignFirstResponder()
         noteTextField.resignFirstResponder()
         
