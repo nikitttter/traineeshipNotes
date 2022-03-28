@@ -69,7 +69,7 @@ class NoteViewController: UIViewController {
         noteTextField.topAnchor.constraint(equalTo: headerContainer.bottomAnchor, constant: 20).isActive = true
         noteTextField.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 5).isActive = true
         noteTextField.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -5).isActive = true
-        noteTextField.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor).isActive = true
+        noteTextField.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -20).isActive = true
         
         noteTextField.font = UIFont.systemFont(ofSize: 14.0)
         noteTextField.backgroundColor = UIColor.black.withAlphaComponent(0.2)
@@ -104,11 +104,11 @@ class NoteViewController: UIViewController {
         guard let info = notification.userInfo as NSDictionary? else {
             return
         }
-        guard let kbSize = (info.value(forKey: UIResponder.keyboardFrameEndUserInfoKey) as? NSValue)?.cgRectValue.size else {
+        guard let keyboardSize = (info.value(forKey: UIResponder.keyboardFrameEndUserInfoKey) as? NSValue)?.cgRectValue.size else {
             return
         }
         
-        let contentInsets = UIEdgeInsets(top: 0.0, left: 0.0, bottom: kbSize.height, right: 0.0)
+        let contentInsets = UIEdgeInsets(top: 0.0, left: 0.0, bottom: keyboardSize.height, right: 0.0)
         noteTextField.contentInset = contentInsets
     }
     
