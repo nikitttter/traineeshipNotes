@@ -1,0 +1,9 @@
+/* 
+  Localizable.strings
+  Notes
+
+  Created by Nikita Yakovlev on 28.03.2022.
+  
+*/
+"doneButton" = "Done";
+"noteTitlePlaceHolder" = "Title";
