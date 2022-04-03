@@ -13,6 +13,7 @@
 		11DACDFB27F0AF1100623F11 /* NoteViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11DACDFA27F0AF1100623F11 /* NoteViewController.swift */; };
 		11DACE0027F0AF1300623F11 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 11DACDFF27F0AF1300623F11 /* Assets.xcassets */; };
 		11DACE0327F0AF1300623F11 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 11DACE0127F0AF1300623F11 /* LaunchScreen.storyboard */; };
+		11EB6AE427F79DCF00EE4E6D /* Note.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11EB6AE327F79DCF00EE4E6D /* Note.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -25,6 +26,7 @@
 		11DACDFF27F0AF1300623F11 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		11DACE0227F0AF1300623F11 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		11DACE0427F0AF1300623F11 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		11EB6AE327F79DCF00EE4E6D /* Note.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Note.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -60,12 +62,21 @@
 				11DACDF627F0AF1100623F11 /* AppDelegate.swift */,
 				11DACDF827F0AF1100623F11 /* SceneDelegate.swift */,
 				11DACDFA27F0AF1100623F11 /* NoteViewController.swift */,
+				11EB6AE527F79DF400EE4E6D /* Models */,
 				11DACDFF27F0AF1300623F11 /* Assets.xcassets */,
 				11DACE0127F0AF1300623F11 /* LaunchScreen.storyboard */,
 				110B006427F1436900ED5FC8 /* Localizable.strings */,
 				11DACE0427F0AF1300623F11 /* Info.plist */,
 			);
 			path = Notes;
+			sourceTree = "<group>";
+		};
+		11EB6AE527F79DF400EE4E6D /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				11EB6AE327F79DCF00EE4E6D /* Note.swift */,
+			);
+			path = Models;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -164,6 +175,7 @@
 				11DACDFB27F0AF1100623F11 /* NoteViewController.swift in Sources */,
 				11DACDF727F0AF1100623F11 /* AppDelegate.swift in Sources */,
 				11DACDF927F0AF1100623F11 /* SceneDelegate.swift in Sources */,
+				11EB6AE427F79DCF00EE4E6D /* Note.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

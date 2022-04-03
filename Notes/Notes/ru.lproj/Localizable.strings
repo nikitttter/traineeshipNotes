@@ -7,3 +7,6 @@
 */
 "doneButton" = "Готово";
 "noteTitlePlaceHolder" = "Заголовок";
+"error" = "Ошибка";
+"emptyNote" = "Заголовок или текст заметки пусты";
+"date" = "Дата";
