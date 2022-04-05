@@ -23,6 +23,7 @@ class NoteViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
+
         self.view.backgroundColor = .lightGray
         dateFormatted.setLocalizedDateFormatFromTemplate("dd MMMM yyyy")
         setupDoneButton()
@@ -31,6 +32,10 @@ class NoteViewController: UIViewController {
 
         titleTextField.text = note.title
         noteTextField.text = note.text
+        if let date = note.date {
+            datePicker.date = date
+            dateField.text = "\(NSLocalizedString("date", comment: "")): \(dateFormatted.string(from: datePicker.date))"
+        }
     }
 
     private func setupHeaderContainer() {
@@ -138,7 +143,7 @@ class NoteViewController: UIViewController {
         datePicker.leadingAnchor.constraint(equalTo: superView.leadingAnchor, constant: 20).isActive = true
         datePicker.trailingAnchor.constraint(equalTo: superView.trailingAnchor, constant: -20).isActive = true
         datePicker.bottomAnchor.constraint(equalTo: superView.bottomAnchor).isActive = true
-        datePicker.topAnchor.constraint(equalTo: titleTextField.bottomAnchor, constant: 20).isActive = true
+        datePicker.topAnchor.constraint(equalTo: dateField.bottomAnchor, constant: 20).isActive = true
 
         datePicker.datePickerMode = .date
         datePicker.preferredDatePickerStyle = .wheels
@@ -175,9 +180,22 @@ class NoteViewController: UIViewController {
         NotificationCenter.default.removeObserver(self, name: UIResponder.keyboardWillHideNotification, object: nil)
     }
 
-    func hideKeyboard() {
+    private func hideKeyboard() {
         titleTextField.resignFirstResponder()
         noteTextField.resignFirstResponder()
+    }
+
+    private func hideDatePicker() {
+        datePicker.removeFromSuperview()
+        dateFieldBottomAnchor?.isActive = true
+        datePickerWasShown = false
+    }
+
+    private func showDatePicker() {
+        headerContainer.addSubview(datePicker)
+        dateFieldBottomAnchor?.isActive = false
+        setupDatePicker()
+        datePickerWasShown = true
     }
 
     func showErrorAlert(_ text: String) {
@@ -193,6 +211,7 @@ class NoteViewController: UIViewController {
     @objc private func doneButtonTapped(_ sender: Any) {
         note.title = titleTextField.text ?? ""
         note.text = noteTextField.text
+        note.date = dateField.text == "" ? nil : datePicker.date
 
         guard !self.isNoteEmpty() else {
             showErrorAlert(NSLocalizedString("emptyNote", comment: ""))
@@ -200,6 +219,7 @@ class NoteViewController: UIViewController {
         }
 
         note.save()
+        hideDatePicker()
         hideKeyboard()
     }
 
@@ -222,15 +242,13 @@ class NoteViewController: UIViewController {
 
     @objc private func dateFieldTapped() {
         hideKeyboard()
-        if datePickerWasShown {
-            datePicker.removeFromSuperview()
-        } else {
-            headerContainer.addSubview(datePicker)
-            setupDatePicker()
-        }
 
-        dateFieldBottomAnchor?.isActive = datePickerWasShown
-        datePickerWasShown = !datePickerWasShown
+        if datePickerWasShown {
+            hideDatePicker()
+        } else {
+            showDatePicker()
+            dateField.text = nil
+        }
     }
 
     @objc private func datePickerValueChanged(_ sender: UIDatePicker) {

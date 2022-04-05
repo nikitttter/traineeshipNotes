@@ -20,10 +20,14 @@ struct Note {
     init () {
         title = defaults.value(forKey: "title") as? String ?? ""
         text = defaults.value(forKey: "note") as? String ?? ""
+        if let timeInterval = defaults.value(forKey: "date") as? TimeInterval {
+            date = Date(timeIntervalSince1970: timeInterval)
+        }
     }
 
     func save() {
         defaults.set(title, forKey: "title")
         defaults.set(text, forKey: "note")
+        defaults.set(date?.timeIntervalSince1970, forKey: "date")
     }
 }
