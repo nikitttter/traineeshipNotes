@@ -71,6 +71,8 @@ class NoteViewController: UIViewController {
 
         titleTextField.placeholder = NSLocalizedString("noteTitlePlaceHolder", comment: "")
         titleTextField.font = UIFont.boldSystemFont(ofSize: 22.0)
+
+        titleTextField.delegate = self
     }
 
     private func setupDoneButton() {
@@ -100,8 +102,6 @@ class NoteViewController: UIViewController {
 
         noteTextField.font = UIFont.systemFont(ofSize: 14.0)
         noteTextField.backgroundColor = UIColor.black.withAlphaComponent(0.2)
-
-        noteTextField.becomeFirstResponder()
     }
 
     private func setupDateField() {
@@ -173,6 +173,7 @@ class NoteViewController: UIViewController {
             name: UIResponder.keyboardWillHideNotification,
             object: nil
         )
+        noteTextField.becomeFirstResponder()
     }
 
     override func viewWillDisappear(_ animated: Bool) {
@@ -272,6 +273,17 @@ extension NoteViewController: UITextFieldDelegate {
     func textFieldShouldBeginEditing(_ textField: UITextField) -> Bool {
         if textField == dateField {
             return false
+        }
+        return true
+    }
+
+    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+        if textField == titleTextField {
+            noteTextField.becomeFirstResponder()
+            noteTextField.selectedTextRange = noteTextField.textRange(
+                from: noteTextField.endOfDocument,
+                to: noteTextField.endOfDocument
+            )
         }
         return true
     }
