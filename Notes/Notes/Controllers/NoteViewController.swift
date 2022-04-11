@@ -24,8 +24,8 @@ class NoteViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        self.view.backgroundColor = .white
-        dateFormatted.dateFormat = "dd.MM.yyyy EEEE HH:mm:ss"
+        self.view.backgroundColor = UIColor(red: 0.898, green: 0.898, blue: 0.898, alpha: 1)
+        dateFormatted.dateFormat = "dd.MM.yyyy EEEE HH:mm"
         setupDoneButton()
         setupHeaderContainer()
         setupNoteField()
@@ -34,13 +34,8 @@ class NoteViewController: UIViewController {
 
         titleTextField.text = data?.note.title
         noteTextField.text = data?.note.text
-
-        if let date = data?.note.date {
-            dateField.text = dateFormatted.string(from: date)
-        } else {
-            dateField.text = dateFormatted.string(from: Date.now)
-        }
-    }
+        dateField.text = dateFormatted.string(from: currentDate)
+     }
 
     private func setupHeaderContainer() {
         view.addSubview(headerContainer)
@@ -88,7 +83,7 @@ class NoteViewController: UIViewController {
         view.addSubview(noteTextField)
         noteTextField.translatesAutoresizingMaskIntoConstraints = false
 
-        noteTextField.topAnchor.constraint(equalTo: headerContainer.bottomAnchor, constant: 12.0).isActive = true
+        noteTextField.topAnchor.constraint(equalTo: headerContainer.bottomAnchor, constant: 16.0).isActive = true
         noteTextField.leadingAnchor.constraint(
             equalTo: view.safeAreaLayoutGuide.leadingAnchor,
             constant: 20.0
@@ -103,6 +98,7 @@ class NoteViewController: UIViewController {
         ).isActive = true
 
         noteTextField.font = UIFont.systemFont(ofSize: 16.0)
+        noteTextField.backgroundColor = view.backgroundColor
     }
 
     private func setupDateField() {
@@ -145,10 +141,6 @@ class NoteViewController: UIViewController {
         NotificationCenter.default.removeObserver(self, name: UIResponder.keyboardWillHideNotification, object: nil)
 
         saveModel()
-
-        guard !self.isNoteEmpty() else {
-            return
-        }
 
         guard let note = data?.note else {
             return

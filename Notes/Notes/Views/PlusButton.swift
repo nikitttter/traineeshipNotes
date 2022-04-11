@@ -19,7 +19,7 @@ class PlusButton: UIButton {
 
     private func setupSetting() {
         self.translatesAutoresizingMaskIntoConstraints = false
-        self.backgroundColor = .systemBlue
+        self.backgroundColor = UIColor(red: 0, green: 0.478, blue: 1, alpha: 1)
         self.setTitle("+", for: .normal)
         self.titleLabel?.numberOfLines = 0
         self.titleLabel?.font = .systemFont(ofSize: 36.0)

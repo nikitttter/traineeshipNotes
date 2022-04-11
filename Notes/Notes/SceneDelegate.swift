@@ -25,4 +25,12 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
             self.window?.makeKeyAndVisible()
         }
     }
+
+    func sceneWillResignActive(_ scene: UIScene) {
+        if let navigationController = self.window?.rootViewController as? UINavigationController {
+            if let firstViewController = navigationController.viewControllers.first as? ListViewController {
+                NoteArrayDataProvider.getInstance().saveNotes(firstViewController.arrayNotes)
+            }
+        }
+    }
 }

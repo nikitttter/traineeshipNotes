@@ -10,3 +10,4 @@
 "error" = "Error";
 "emptyNote" = "The title or text of the note is empty";
 "date" = "Date";
+"listNotes" = "Notes";

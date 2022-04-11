@@ -6,29 +6,30 @@
 //
 
 import UIKit
-protocol ListViewControllerDelegate: AnyObject {
-    func updateNote(note: Note, index: Int)
-    func newNote(note: Note)
-}
 
 class ListViewController: UIViewController {
     private let plusButton = PlusButton()
     private let stackView = UIStackView()
+    private let scrollView = UIScrollView()
     var arrayNotes = [Note]()
 
     override func viewDidLoad() {
         super.viewDidLoad()
-//        arrayNotes.append(Note(title: "title1", text: "ivjvhu", date: Date.now))
-//        arrayNotes.append(Note(title: "title2", text: "vvrvbb", date: Date.now))
-//        arrayNotes.append(Note(title: "title3", text: "ivbtyjujvhu", date: Date.now))
+        arrayNotes = NoteArrayDataProvider.getInstance().getSavedNotes() ?? [Note]()
 
-        self.navigationItem.title = "Notes"
-        setupPlusButton()
+        view.addSubview(scrollView)
+
         setupStackView()
-        self.view.backgroundColor = .lightGray
+        setupPlusButton()
+        self.view.backgroundColor = UIColor(red: 0.898, green: 0.898, blue: 0.898, alpha: 1)
         updateStackContent()
+
+        scrollView.isPagingEnabled = true
     }
 
+    override func viewWillAppear(_ animated: Bool) {
+        self.navigationItem.title = NSLocalizedString("listNotes", comment: "")
+    }
     private func setupPlusButton() {
         self.view.addSubview(plusButton)
         view.backgroundColor = .white
@@ -37,15 +38,13 @@ class ListViewController: UIViewController {
             equalTo: self.view.safeAreaLayoutGuide.trailingAnchor,
             constant: -19.0
         ).isActive = true
+
+        plusButton.contentVerticalAlignment = .bottom
         plusButton.addTarget(self, action: #selector(plusButtonTapped), for: .touchUpInside)
     }
     private func setupStackView() {
-        self.view.addSubview(stackView)
+        scrollView.addSubview(stackView)
         stackView.translatesAutoresizingMaskIntoConstraints = false
-        stackView.topAnchor.constraint(
-            equalTo: self.view.safeAreaLayoutGuide.topAnchor,
-            constant: 26.0
-        ).isActive = true
         stackView.leadingAnchor.constraint(
             equalTo: self.view.safeAreaLayoutGuide.leadingAnchor,
             constant: 16.0
@@ -70,12 +69,14 @@ class ListViewController: UIViewController {
             stackView.addArrangedSubview(viewNote)
             viewNote.addTarget(self, action: #selector(noteCellTapped(_ :)), for: .touchUpInside)
         }
+        self.view.layoutIfNeeded()
     }
 
     @objc private func plusButtonTapped() {
         let viewController = NoteViewController()
         viewController.delegate = self
         viewController.modalPresentationStyle = .currentContext
+        self.navigationItem.title = ""
         self.navigationController?.pushViewController(viewController, animated: true)
     }
 
@@ -89,6 +90,7 @@ class ListViewController: UIViewController {
                     }
                     return nil
                 }
+                self.navigationItem.title = ""
                 destination.delegate = self
                 self.navigationController?.pushViewController(destination, animated: true)
             }
@@ -99,11 +101,18 @@ class ListViewController: UIViewController {
         plusButton.clipsToBounds = true
         plusButton.layer.cornerRadius = plusButton.frame.width / 2
         plusButton.layoutIfNeeded()
+
+        scrollView.frame = self.view.bounds
+        scrollView.contentSize = CGSize(width: stackView.frame.width, height: stackView.frame.height)
     }
 
     func updateNote(note: Note, index: Int) {
         if index >= arrayNotes.startIndex && index < arrayNotes.endIndex {
-            arrayNotes[index] = note
+            if note.isEmpty {
+                arrayNotes.remove(at: index)
+            } else {
+                arrayNotes[index] = note
+            }
         }
 
         updateStackContent()
