@@ -8,9 +8,10 @@
 import UIKit
 
 class NoteCellView: UIControl {
-    let titleField = UILabel()
-    let textField = UILabel()
-    let dateField = UILabel()
+    private let titleField = UILabel()
+    private let textField = UILabel()
+    private let dateField = UILabel()
+    var dateFormat = "dd.MM.yyyy"
 
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -22,7 +23,13 @@ class NoteCellView: UIControl {
         setupView()
     }
 
-    func setupView() {
+    func setData(_ note: Note) {
+        titleField.text = note.title
+        textField.text = note.text
+        dateField.setText(date: note.date, format: dateFormat)
+    }
+
+    private func setupView() {
         setupTitleField()
         setupTextField()
         setupDateField()
@@ -76,7 +83,7 @@ class NoteCellView: UIControl {
 }
 
 extension UILabel {
-    func setText(date: Date, format: String) {
+    fileprivate func setText(date: Date, format: String) {
         let formatter = DateFormatter()
         formatter.dateFormat = format
 

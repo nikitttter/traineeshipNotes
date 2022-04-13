@@ -26,5 +26,6 @@ class PlusButton: UIButton {
         self.titleLabel?.textAlignment = .center
         self.widthAnchor.constraint(equalToConstant: 50.0).isActive = true
         self.heightAnchor.constraint(equalTo: self.widthAnchor).isActive = true
+        self.contentVerticalAlignment = .bottom
     }
 }

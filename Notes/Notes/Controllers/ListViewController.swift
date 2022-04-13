@@ -39,7 +39,6 @@ class ListViewController: UIViewController {
             constant: -19.0
         ).isActive = true
 
-        plusButton.contentVerticalAlignment = .bottom
         plusButton.addTarget(self, action: #selector(plusButtonTapped), for: .touchUpInside)
     }
     private func setupStackView() {
@@ -63,9 +62,7 @@ class ListViewController: UIViewController {
         stackView.arrangedSubviews.forEach { $0.removeFromSuperview() }
         for note in arrayNotes {
             let viewNote = NoteCellView()
-            viewNote.dateField.setText(date: note.date, format: "dd.MM.yyyy")
-            viewNote.textField.text = note.text
-            viewNote.titleField.text = note.title
+            viewNote.setData(note)
             stackView.addArrangedSubview(viewNote)
             viewNote.addTarget(self, action: #selector(noteCellTapped(_ :)), for: .touchUpInside)
         }
