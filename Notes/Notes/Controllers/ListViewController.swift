@@ -60,9 +60,12 @@ class ListViewController: UIViewController {
 
     func updateStackContent() {
         stackView.arrangedSubviews.forEach { $0.removeFromSuperview() }
-        for note in arrayNotes {
+        for (index, note) in arrayNotes.enumerated() {
             let viewNote = NoteCellView()
             viewNote.setData(note)
+            viewNote.closure = {
+                return (index, note)
+            }
             stackView.addArrangedSubview(viewNote)
             viewNote.addTarget(self, action: #selector(noteCellTapped(_ :)), for: .touchUpInside)
         }
@@ -79,18 +82,15 @@ class ListViewController: UIViewController {
 
     @objc private func noteCellTapped(_ sender: Any) {
         if let noteCellView = sender as? NoteCellView {
-            if let index = stackView.arrangedSubviews.firstIndex(of: noteCellView) {
-                let destination = NoteViewController()
-                destination.closure = { [weak self] in
-                    if let note = self?.arrayNotes[index] {
-                        return (index, note)
-                    }
-                    return nil
-                }
-                self.navigationItem.title = ""
-                destination.delegate = self
-                self.navigationController?.pushViewController(destination, animated: true)
+            let destination = NoteViewController()
+
+            if let closure = noteCellView.closure {
+                destination.data = closure()
             }
+
+            self.navigationItem.title = ""
+            destination.delegate = self
+            self.navigationController?.pushViewController(destination, animated: true)
         }
     }
 

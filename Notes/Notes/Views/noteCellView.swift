@@ -12,6 +12,7 @@ class NoteCellView: UIControl {
     private let textField = UILabel()
     private let dateField = UILabel()
     var dateFormat = "dd.MM.yyyy"
+    var closure: (() -> (Int, Note))?
 
     override init(frame: CGRect) {
         super.init(frame: frame)

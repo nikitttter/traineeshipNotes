@@ -17,9 +17,7 @@ class NoteViewController: UIViewController {
     private var currentDate = Date.now
 
     private let dateFormatted = DateFormatter()
-    private var data: (id: Int?, note: Note)?
-
-    var closure: (() -> (Int?, Note)?)?
+    var data: (id: Int?, note: Note)?
     weak var delegate: ListViewController?
 
     override func viewDidLoad() {
@@ -29,8 +27,6 @@ class NoteViewController: UIViewController {
         setupDoneButton()
         setupHeaderContainer()
         setupNoteField()
-
-        data = closure?()
 
         titleTextField.text = data?.note.title
         noteTextField.text = data?.note.text
