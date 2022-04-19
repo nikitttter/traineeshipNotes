@@ -7,12 +7,13 @@
 
 import UIKit
 
-class NoteCellView: UIControl {
+class NoteCellView: UIView {
     private let titleField = UILabel()
     private let textField = UILabel()
     private let dateField = UILabel()
+    private var model: Note?
     var dateFormat = "dd.MM.yyyy"
-    var closure: (() -> (Int, Note))?
+    var closure: ((Note) -> Void)?
 
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -25,6 +26,7 @@ class NoteCellView: UIControl {
     }
 
     func setData(_ note: Note) {
+        model = note
         titleField.text = note.title
         textField.text = note.text
         dateField.setText(date: note.date, format: dateFormat)
@@ -35,6 +37,8 @@ class NoteCellView: UIControl {
         setupTextField()
         setupDateField()
 
+        let recognizer = UITapGestureRecognizer(target: self, action: #selector(handleTap(_:)))
+        self.addGestureRecognizer(recognizer)
         self.clipsToBounds = true
         self.layer.cornerRadius = 14.0
         self.backgroundColor = .white
@@ -80,6 +84,12 @@ class NoteCellView: UIControl {
 
         dateField.font = UIFont.systemFont(ofSize: 10.0)
         dateField.textColor = UIColor.black
+    }
+
+    @objc private func handleTap(_ sender: UITapGestureRecognizer) {
+        if let note = self.model {
+            closure?(note)
+        }
     }
 }
 

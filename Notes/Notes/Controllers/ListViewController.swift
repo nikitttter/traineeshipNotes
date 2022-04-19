@@ -60,38 +60,29 @@ class ListViewController: UIViewController {
 
     func updateStackContent() {
         stackView.arrangedSubviews.forEach { $0.removeFromSuperview() }
-        for (index, note) in arrayNotes.enumerated() {
+        for note in arrayNotes {
             let viewNote = NoteCellView()
             viewNote.setData(note)
-            viewNote.closure = {
-                return (index, note)
+            viewNote.closure = { [weak self] model in
+                self?.routeToNoteViewController(model: model)
             }
             stackView.addArrangedSubview(viewNote)
-            viewNote.addTarget(self, action: #selector(noteCellTapped(_ :)), for: .touchUpInside)
         }
         self.view.layoutIfNeeded()
     }
 
     @objc private func plusButtonTapped() {
-        let viewController = NoteViewController()
-        viewController.delegate = self
-        viewController.modalPresentationStyle = .currentContext
-        self.navigationItem.title = ""
-        self.navigationController?.pushViewController(viewController, animated: true)
+        routeToNoteViewController(model: nil)
     }
 
-    @objc private func noteCellTapped(_ sender: Any) {
-        if let noteCellView = sender as? NoteCellView {
-            let destination = NoteViewController()
-
-            if let closure = noteCellView.closure {
-                destination.data = closure()
-            }
-
-            self.navigationItem.title = ""
-            destination.delegate = self
-            self.navigationController?.pushViewController(destination, animated: true)
+    private func routeToNoteViewController(model: Note?) {
+        let destination = NoteViewController()
+        if let model = model {
+            destination.data = model
         }
+        destination.delegate = self
+        self.navigationItem.title = ""
+        self.navigationController?.pushViewController(destination, animated: true)
     }
 
     override func viewDidLayoutSubviews() {
@@ -103,15 +94,14 @@ class ListViewController: UIViewController {
         scrollView.contentSize = CGSize(width: stackView.frame.width, height: stackView.frame.height)
     }
 
-    func updateNote(note: Note, index: Int) {
-        if index >= arrayNotes.startIndex && index < arrayNotes.endIndex {
+    func updateNote(note: Note) {
+        if let index = arrayNotes.firstIndex(where: { $0.id == note.id }) {
             if note.isEmpty {
                 arrayNotes.remove(at: index)
             } else {
                 arrayNotes[index] = note
             }
         }
-
         updateStackContent()
     }
 

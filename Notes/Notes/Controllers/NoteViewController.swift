@@ -17,7 +17,8 @@ class NoteViewController: UIViewController {
     private var currentDate = Date.now
 
     private let dateFormatted = DateFormatter()
-    var data: (id: Int?, note: Note)?
+    private var isNewNote: Bool!
+    var data: Note?
     weak var delegate: ListViewController?
 
     override func viewDidLoad() {
@@ -28,8 +29,14 @@ class NoteViewController: UIViewController {
         setupHeaderContainer()
         setupNoteField()
 
-        titleTextField.text = data?.note.title
-        noteTextField.text = data?.note.text
+        if data != nil {
+            isNewNote = false
+        } else {
+            isNewNote = true
+        }
+
+        titleTextField.text = data?.title
+        noteTextField.text = data?.text
         dateField.text = dateFormatted.string(from: currentDate)
      }
 
@@ -138,14 +145,14 @@ class NoteViewController: UIViewController {
 
         saveModel()
 
-        guard let note = data?.note else {
+        guard let note = data else {
             return
         }
 
-        if let index = data?.id {
-            delegate?.updateNote(note: note, index: index)
-        } else {
+        if isNewNote {
             delegate?.newNote(note: note)
+        } else {
+            delegate?.updateNote(note: note)
         }
     }
 
@@ -165,12 +172,12 @@ class NoteViewController: UIViewController {
     }
 
     private func saveModel() {
-        if data?.note == nil {
-            data = (nil, Note(title: titleTextField.text ?? String(), text: noteTextField.text, date: currentDate))
+        if data == nil {
+            data = Note(title: titleTextField.text ?? String(), text: noteTextField.text, date: currentDate)
         } else {
-            data?.note.title = titleTextField.text ?? String()
-            data?.note.text = noteTextField.text
-            data?.note.date = currentDate
+            data?.title = titleTextField.text ?? String()
+            data?.text = noteTextField.text
+            data?.date = currentDate
         }
     }
 
@@ -209,7 +216,7 @@ class NoteViewController: UIViewController {
 
 extension NoteViewController {
     func isNoteEmpty() -> Bool {
-        return data?.note.isEmpty ?? true
+        return data?.isEmpty ?? true
     }
 }
 

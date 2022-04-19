@@ -11,12 +11,13 @@ struct Note: Codable {
     var title: String
     var text: String
     var date: Date
+    var id: String
     var isEmpty: Bool {
         return title.isEmpty && text.isEmpty
     }
 
     enum CodingKeys: CodingKey {
-        case title, text, date
+        case title, text, date, id
     }
 
     private let defaults = UserDefaults.standard
@@ -26,6 +27,7 @@ struct Note: Codable {
         self.title = title
         self.text = text
         self.date = date
+        self.id = UUID().uuidString
     }
 
     func getEncodedData() -> Data? {
