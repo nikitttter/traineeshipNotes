@@ -149,9 +149,9 @@ class NoteViewController: UIViewController {
             return
         }
 
-        if isNewNote {
+        if isNewNote && !note.isEmpty {
             delegate?.newNote(note: note)
-        } else {
+        } else if !isNewNote {
             delegate?.updateNote(note: note)
         }
     }

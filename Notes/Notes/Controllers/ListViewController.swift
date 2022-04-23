@@ -9,22 +9,37 @@ import UIKit
 
 class ListViewController: UIViewController {
     private let plusButton = PlusButton()
-    private let stackView = UIStackView()
-    private let scrollView = UIScrollView()
+
     var arrayNotes = [Note]()
+    private let cellIdentifier = "cellNote"
+    private let cellLineSpacing = 4.0
+    private let cellHorizontalMargin = 16.0
+    private let cellHeight = 90.0
+
+    lazy var collectionView: UICollectionView = {
+        let flowLayout = UICollectionViewFlowLayout()
+        flowLayout.scrollDirection = .vertical
+        flowLayout.minimumLineSpacing = cellLineSpacing
+        return UICollectionView(frame: UIScreen.main.bounds, collectionViewLayout: flowLayout)
+    }()
 
     override func viewDidLoad() {
         super.viewDidLoad()
         arrayNotes = NoteArrayDataProvider.getInstance().getSavedNotes() ?? [Note]()
 
-        view.addSubview(scrollView)
+        collectionView.register(NoteCellView.self, forCellWithReuseIdentifier: cellIdentifier)
+        collectionView.dataSource = self
+        collectionView.delegate = self
+        collectionView.collectionViewLayout = {
+            let flowLayout = UICollectionViewFlowLayout()
+            flowLayout.scrollDirection = .vertical
+            flowLayout.minimumLineSpacing = cellLineSpacing
+            return flowLayout
+        }()
 
-        setupStackView()
+        setupCollectionView()
         setupPlusButton()
         self.view.backgroundColor = UIColor(red: 0.898, green: 0.898, blue: 0.898, alpha: 1)
-        updateStackContent()
-
-        scrollView.isPagingEnabled = true
     }
 
     override func viewWillAppear(_ animated: Bool) {
@@ -33,7 +48,10 @@ class ListViewController: UIViewController {
     private func setupPlusButton() {
         self.view.addSubview(plusButton)
         view.backgroundColor = .white
-        plusButton.bottomAnchor.constraint(equalTo: self.view.bottomAnchor, constant: -60.0).isActive = true
+        plusButton.bottomAnchor.constraint(
+            equalTo: self.view.safeAreaLayoutGuide.bottomAnchor,
+            constant: -20.0
+        ).isActive = true
         plusButton.trailingAnchor.constraint(
             equalTo: self.view.safeAreaLayoutGuide.trailingAnchor,
             constant: -19.0
@@ -41,36 +59,16 @@ class ListViewController: UIViewController {
 
         plusButton.addTarget(self, action: #selector(plusButtonTapped), for: .touchUpInside)
     }
-    private func setupStackView() {
-        scrollView.addSubview(stackView)
-        stackView.translatesAutoresizingMaskIntoConstraints = false
-        stackView.leadingAnchor.constraint(
-            equalTo: self.view.safeAreaLayoutGuide.leadingAnchor,
-            constant: 16.0
-        ).isActive = true
-        stackView.trailingAnchor.constraint(
-            equalTo: self.view.safeAreaLayoutGuide.trailingAnchor,
-            constant: -16.0
-        ).isActive = true
 
-        stackView.axis = .vertical
-        stackView.spacing = 4.0
-        stackView.distribution = .fill
+    func setupCollectionView() {
+        view.addSubview(collectionView)
+        collectionView.translatesAutoresizingMaskIntoConstraints = false
+        collectionView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor).isActive = true
+        collectionView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor).isActive = true
+        collectionView.topAnchor.constraint(equalTo: view.topAnchor).isActive = true
+        collectionView.bottomAnchor.constraint(equalTo: view.bottomAnchor).isActive = true
+        collectionView.backgroundColor = UIColor(red: 0.898, green: 0.898, blue: 0.898, alpha: 1)
     }
-
-    func updateStackContent() {
-        stackView.arrangedSubviews.forEach { $0.removeFromSuperview() }
-        for note in arrayNotes {
-            let viewNote = NoteCellView()
-            viewNote.setData(note)
-            viewNote.closure = { [weak self] model in
-                self?.routeToNoteViewController(model: model)
-            }
-            stackView.addArrangedSubview(viewNote)
-        }
-        self.view.layoutIfNeeded()
-    }
-
     @objc private func plusButtonTapped() {
         routeToNoteViewController(model: nil)
     }
@@ -89,9 +87,6 @@ class ListViewController: UIViewController {
         plusButton.clipsToBounds = true
         plusButton.layer.cornerRadius = plusButton.frame.width / 2
         plusButton.layoutIfNeeded()
-
-        scrollView.frame = self.view.bounds
-        scrollView.contentSize = CGSize(width: stackView.frame.width, height: stackView.frame.height)
     }
 
     func updateNote(note: Note) {
@@ -102,11 +97,49 @@ class ListViewController: UIViewController {
                 arrayNotes[index] = note
             }
         }
-        updateStackContent()
+        collectionView.reloadData()
     }
 
     func newNote(note: Note) {
         arrayNotes.append(note)
-        updateStackContent()
+        collectionView.reloadData()
+    }
+}
+extension ListViewController: UICollectionViewDataSource {
+    func numberOfSections(in collectionView: UICollectionView) -> Int {
+        return 1
+    }
+    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+        return arrayNotes.count
+    }
+
+    func collectionView(
+        _ collectionView: UICollectionView,
+        cellForItemAt indexPath: IndexPath
+    ) -> UICollectionViewCell {
+        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: cellIdentifier, for: indexPath)
+
+        guard let customCell = cell as? NoteCellView else {
+            return cell
+        }
+
+        customCell.setData(arrayNotes[indexPath.row])
+        customCell.closure = { [weak self] model in
+            self?.routeToNoteViewController(model: model)
+        }
+
+        return customCell
+    }
+}
+extension ListViewController: UICollectionViewDelegateFlowLayout {
+    func collectionView(
+        _ collectionView: UICollectionView,
+        layout collectionViewLayout: UICollectionViewLayout,
+        sizeForItemAt indexPath: IndexPath
+    ) -> CGSize {
+        return CGSize(
+            width: collectionView.frame.width - cellHorizontalMargin * 2,
+            height: cellHeight
+        )
     }
 }

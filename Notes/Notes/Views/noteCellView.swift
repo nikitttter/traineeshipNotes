@@ -7,7 +7,7 @@
 
 import UIKit
 
-class NoteCellView: UIView {
+class NoteCellView: UICollectionViewCell {
     private let titleField = UILabel()
     private let textField = UILabel()
     private let dateField = UILabel()
@@ -21,8 +21,7 @@ class NoteCellView: UIView {
     }
 
     required init?(coder: NSCoder) {
-        super.init(coder: coder)
-        setupView()
+        fatalError("init(coder:) has not been implemented")
     }
 
     func setData(_ note: Note) {
@@ -47,10 +46,19 @@ class NoteCellView: UIView {
     private func setupTitleField() {
         self.addSubview(titleField)
         titleField.translatesAutoresizingMaskIntoConstraints = false
-        titleField.topAnchor.constraint(equalTo: self.safeAreaLayoutGuide.topAnchor, constant: 10.0).isActive = true
+        titleField.topAnchor.constraint(
+            equalTo: self.safeAreaLayoutGuide.topAnchor,
+            constant: 10.0
+        ).isActive = true
         titleField.heightAnchor.constraint(equalToConstant: 18.0).isActive = true
-        titleField.leadingAnchor.constraint(equalTo: self.leadingAnchor, constant: 16.0).isActive = true
-        titleField.trailingAnchor.constraint(equalTo: self.trailingAnchor, constant: -42.0).isActive = true
+        titleField.leadingAnchor.constraint(
+            equalTo: self.safeAreaLayoutGuide.leadingAnchor,
+            constant: 16.0
+        ).isActive = true
+        titleField.trailingAnchor.constraint(
+            equalTo: self.safeAreaLayoutGuide.trailingAnchor,
+            constant: -42.0
+        ).isActive = true
 
         titleField.isUserInteractionEnabled = false
 
@@ -61,10 +69,19 @@ class NoteCellView: UIView {
     private func setupTextField() {
         self.addSubview(textField)
         textField.translatesAutoresizingMaskIntoConstraints = false
-        textField.topAnchor.constraint(equalTo: titleField.bottomAnchor, constant: 4.0).isActive = true
+        textField.topAnchor.constraint(
+            equalTo: titleField.bottomAnchor,
+            constant: 4.0
+        ).isActive = true
         textField.heightAnchor.constraint(equalToConstant: 14.0).isActive = true
-        textField.leadingAnchor.constraint(equalTo: self.leadingAnchor, constant: 16.0).isActive = true
-        textField.trailingAnchor.constraint(equalTo: self.trailingAnchor, constant: -16.0).isActive = true
+        textField.leadingAnchor.constraint(
+            equalTo: self.safeAreaLayoutGuide.leadingAnchor,
+            constant: 16.0
+        ).isActive = true
+        textField.trailingAnchor.constraint(
+            equalTo: self.safeAreaLayoutGuide.trailingAnchor,
+            constant: -16.0
+        ).isActive = true
 
         textField.isUserInteractionEnabled = false
 
@@ -76,9 +93,15 @@ class NoteCellView: UIView {
         self.addSubview(dateField)
         dateField.translatesAutoresizingMaskIntoConstraints = false
         dateField.topAnchor.constraint(equalTo: textField.bottomAnchor, constant: 24.0).isActive = true
-        dateField.bottomAnchor.constraint(equalTo: self.safeAreaLayoutGuide.bottomAnchor, constant: -10).isActive = true
+        dateField.bottomAnchor.constraint(
+            equalTo: self.safeAreaLayoutGuide.bottomAnchor,
+            constant: -10
+        ).isActive = true
         dateField.heightAnchor.constraint(equalToConstant: 10.0).isActive = true
-        dateField.leadingAnchor.constraint(equalTo: self.leadingAnchor, constant: 16.0).isActive = true
+        dateField.leadingAnchor.constraint(
+            equalTo: self.safeAreaLayoutGuide.leadingAnchor,
+            constant: 16.0
+        ).isActive = true
 
         dateField.isUserInteractionEnabled = false
 
@@ -90,6 +113,10 @@ class NoteCellView: UIView {
         if let note = self.model {
             closure?(note)
         }
+    }
+
+    override func layoutSubviews() {
+        super.layoutSubviews()
     }
 }
 
