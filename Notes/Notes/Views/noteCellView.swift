@@ -93,10 +93,7 @@ class NoteCellView: UICollectionViewCell {
         self.addSubview(dateField)
         dateField.translatesAutoresizingMaskIntoConstraints = false
         dateField.topAnchor.constraint(equalTo: textField.bottomAnchor, constant: 24.0).isActive = true
-        dateField.bottomAnchor.constraint(
-            equalTo: self.safeAreaLayoutGuide.bottomAnchor,
-            constant: -10
-        ).isActive = true
+        dateField.bottomAnchor.constraint(equalTo: self.safeAreaLayoutGuide.bottomAnchor, constant: -10).isActive = true
         dateField.heightAnchor.constraint(equalToConstant: 10.0).isActive = true
         dateField.leadingAnchor.constraint(
             equalTo: self.safeAreaLayoutGuide.leadingAnchor,
@@ -114,14 +111,10 @@ class NoteCellView: UICollectionViewCell {
             closure?(note)
         }
     }
-
-    override func layoutSubviews() {
-        super.layoutSubviews()
-    }
 }
 
-extension UILabel {
-    fileprivate func setText(date: Date, format: String) {
+private extension UILabel {
+    func setText(date: Date, format: String) {
         let formatter = DateFormatter()
         formatter.dateFormat = format
 
