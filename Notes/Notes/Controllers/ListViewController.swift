@@ -44,7 +44,13 @@ class ListViewController: UIViewController {
 
     override func viewWillAppear(_ animated: Bool) {
         self.navigationItem.title = NSLocalizedString("listNotes", comment: "")
+        plusButton.isHidden = true
     }
+
+    override func viewDidAppear(_ animated: Bool) {
+        showButtonAnimated()
+    }
+
     private func setupPlusButton() {
         self.view.addSubview(plusButton)
         view.backgroundColor = .white
@@ -69,8 +75,11 @@ class ListViewController: UIViewController {
         collectionView.bottomAnchor.constraint(equalTo: view.bottomAnchor).isActive = true
         collectionView.backgroundColor = UIColor(red: 0.898, green: 0.898, blue: 0.898, alpha: 1)
     }
+
     @objc private func plusButtonTapped() {
-        routeToNoteViewController(model: nil)
+        hideButtonAnimated { [weak self] in
+            self?.routeToNoteViewController(model: nil)
+        }
     }
 
     private func routeToNoteViewController(model: Note?) {
@@ -103,6 +112,55 @@ class ListViewController: UIViewController {
     func newNote(note: Note) {
         arrayNotes.append(note)
         collectionView.reloadData()
+    }
+
+    private func showButtonAnimated() {
+        let initialButtonY = self.plusButton.frame.minY
+        plusButton.frame.origin.y = UIScreen.main.bounds.maxY
+        plusButton.isHidden = false
+
+        UIView.animate(
+            withDuration: 2,
+            delay: 0,
+            usingSpringWithDamping: 0.6,
+            initialSpringVelocity: 0.9,
+            options: [],
+            animations: { [weak self] in
+                self?.plusButton.frame.origin.y = initialButtonY
+            },
+            completion: nil
+        )
+    }
+
+    private func hideButtonAnimated(completion: (() -> Void)?) {
+        let initialButtonY = self.plusButton.frame.minY
+
+        UIView.animateKeyframes(
+            withDuration: 1.5,
+            delay: 0,
+            options: [],
+            animations: {
+                UIView.addKeyframe(
+                    withRelativeStartTime: 0,
+                    relativeDuration: 0.6,
+                    animations: { [weak self] in
+                        self?.plusButton.frame.origin.y = initialButtonY - 20
+                    }
+                )
+                UIView.addKeyframe(
+                    withRelativeStartTime: 0.6,
+                    relativeDuration: 0.4,
+                    animations: { [weak self] in
+                        self?.plusButton.frame.origin.y = UIScreen.main.bounds.maxY
+                    }
+                )
+            },
+            completion: { [weak plusButton] _ in
+                plusButton?.isHidden = true
+                plusButton?.frame.origin.y = initialButtonY
+                completion?()
+            }
+        )
     }
 }
 extension ListViewController: UICollectionViewDataSource {
