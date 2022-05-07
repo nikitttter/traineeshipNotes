@@ -12,6 +12,7 @@
 		118B1E1828022AA0005D731C /* NoteCellView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 118B1E1728022AA0005D731C /* NoteCellView.swift */; };
 		118B1E1A2802367D005D731C /* PlusButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 118B1E192802367D005D731C /* PlusButton.swift */; };
 		119E76032804501B002A780A /* NoteArrayDataProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 119E76022804501B002A780A /* NoteArrayDataProvider.swift */; };
+		11C212472826D13800ED4449 /* SelectBarButtonItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11C212462826D13800ED4449 /* SelectBarButtonItem.swift */; };
 		11DACDF727F0AF1100623F11 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11DACDF627F0AF1100623F11 /* AppDelegate.swift */; };
 		11DACDF927F0AF1100623F11 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11DACDF827F0AF1100623F11 /* SceneDelegate.swift */; };
 		11DACDFB27F0AF1100623F11 /* NoteViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11DACDFA27F0AF1100623F11 /* NoteViewController.swift */; };
@@ -27,6 +28,7 @@
 		118B1E1728022AA0005D731C /* NoteCellView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = NoteCellView.swift; path = Notes/Views/NoteCellView.swift; sourceTree = SOURCE_ROOT; };
 		118B1E192802367D005D731C /* PlusButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlusButton.swift; sourceTree = "<group>"; };
 		119E76022804501B002A780A /* NoteArrayDataProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NoteArrayDataProvider.swift; sourceTree = "<group>"; };
+		11C212462826D13800ED4449 /* SelectBarButtonItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = SelectBarButtonItem.swift; path = Notes/Views/SelectBarButtonItem.swift; sourceTree = SOURCE_ROOT; };
 		11DACDF327F0AF1100623F11 /* Notes.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Notes.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		11DACDF627F0AF1100623F11 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		11DACDF827F0AF1100623F11 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -62,6 +64,7 @@
 			children = (
 				118B1E192802367D005D731C /* PlusButton.swift */,
 				118B1E1728022AA0005D731C /* NoteCellView.swift */,
+				11C212462826D13800ED4449 /* SelectBarButtonItem.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -202,6 +205,7 @@
 			files = (
 				11DACDFB27F0AF1100623F11 /* NoteViewController.swift in Sources */,
 				118B1E1A2802367D005D731C /* PlusButton.swift in Sources */,
+				11C212472826D13800ED4449 /* SelectBarButtonItem.swift in Sources */,
 				11DACDF727F0AF1100623F11 /* AppDelegate.swift in Sources */,
 				11DACDF927F0AF1100623F11 /* SceneDelegate.swift in Sources */,
 				119E76032804501B002A780A /* NoteArrayDataProvider.swift in Sources */,

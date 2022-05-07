@@ -9,6 +9,7 @@ import UIKit
 
 class ListViewController: UIViewController {
     private let plusButton = PlusButton()
+    private let rightBarButton = SelectBarButtonItem()
 
     var arrayNotes = [Note]()
     private let cellIdentifier = "cellNote"
@@ -39,6 +40,7 @@ class ListViewController: UIViewController {
 
         setupCollectionView()
         setupPlusButton()
+        setupRightBarButton()
         self.view.backgroundColor = UIColor(red: 0.898, green: 0.898, blue: 0.898, alpha: 1)
     }
 
@@ -71,11 +73,16 @@ class ListViewController: UIViewController {
         collectionView.translatesAutoresizingMaskIntoConstraints = false
         collectionView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor).isActive = true
         collectionView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor).isActive = true
-        collectionView.topAnchor.constraint(equalTo: view.topAnchor).isActive = true
+        collectionView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 16).isActive = true
         collectionView.bottomAnchor.constraint(equalTo: view.bottomAnchor).isActive = true
         collectionView.backgroundColor = UIColor(red: 0.898, green: 0.898, blue: 0.898, alpha: 1)
     }
 
+    private func setupRightBarButton() {
+        rightBarButton.target = self
+        rightBarButton.action = #selector(rightBarButtonTapped)
+        navigationItem.rightBarButtonItem = rightBarButton
+    }
     @objc private func plusButtonTapped() {
         hideButtonAnimated { [weak self] in
             self?.routeToNoteViewController(model: nil)
@@ -161,6 +168,11 @@ class ListViewController: UIViewController {
                 completion?()
             }
         )
+    }
+
+   @objc private func rightBarButtonTapped() {
+       rightBarButton.stateButton.toggle()
+       print(#function)
     }
 }
 extension ListViewController: UICollectionViewDataSource {
