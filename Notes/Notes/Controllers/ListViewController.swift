@@ -16,28 +16,15 @@ class ListViewController: UIViewController {
     private let cellHorizontalMargin = 16.0
     private let cellHeight = 90.0
 
-    lazy var collectionView: UICollectionView = {
-        let flowLayout = UICollectionViewFlowLayout()
-        flowLayout.scrollDirection = .vertical
-        flowLayout.minimumLineSpacing = cellLineSpacing
-        return UICollectionView(frame: UIScreen.main.bounds, collectionViewLayout: flowLayout)
-    }()
+    private let tableView = UITableView()
 
     override func viewDidLoad() {
         super.viewDidLoad()
         arrayNotes = NoteArrayDataProvider.getInstance().getSavedNotes() ?? [Note]()
 
-        collectionView.register(NoteCellView.self, forCellWithReuseIdentifier: cellIdentifier)
-        collectionView.dataSource = self
-        collectionView.delegate = self
-        collectionView.collectionViewLayout = {
-            let flowLayout = UICollectionViewFlowLayout()
-            flowLayout.scrollDirection = .vertical
-            flowLayout.minimumLineSpacing = cellLineSpacing
-            return flowLayout
-        }()
-
-        setupCollectionView()
+        tableView.register(NoteCellView.self, forCellReuseIdentifier: cellIdentifier)
+        tableView.dataSource = self
+        setupTableView()
         setupPlusButton()
         self.view.backgroundColor = UIColor(red: 0.898, green: 0.898, blue: 0.898, alpha: 1)
     }
@@ -60,14 +47,21 @@ class ListViewController: UIViewController {
         plusButton.addTarget(self, action: #selector(plusButtonTapped), for: .touchUpInside)
     }
 
-    func setupCollectionView() {
-        view.addSubview(collectionView)
-        collectionView.translatesAutoresizingMaskIntoConstraints = false
-        collectionView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor).isActive = true
-        collectionView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor).isActive = true
-        collectionView.topAnchor.constraint(equalTo: view.topAnchor).isActive = true
-        collectionView.bottomAnchor.constraint(equalTo: view.bottomAnchor).isActive = true
-        collectionView.backgroundColor = UIColor(red: 0.898, green: 0.898, blue: 0.898, alpha: 1)
+    func setupTableView() {
+        view.addSubview(tableView)
+        tableView.translatesAutoresizingMaskIntoConstraints = false
+        tableView.trailingAnchor.constraint(
+            equalTo: view.safeAreaLayoutGuide.trailingAnchor,
+            constant: -16
+        ).isActive = true
+        tableView.leadingAnchor.constraint(
+            equalTo: view.safeAreaLayoutGuide.leadingAnchor,
+            constant: 16
+        ).isActive = true
+        tableView.topAnchor.constraint(equalTo: view.topAnchor).isActive = true
+        tableView.bottomAnchor.constraint(equalTo: view.bottomAnchor).isActive = true
+        tableView.backgroundColor = UIColor(red: 0.898, green: 0.898, blue: 0.898, alpha: 1)
+        tableView.separatorStyle = .none
     }
     @objc private func plusButtonTapped() {
         routeToNoteViewController(model: nil)
@@ -97,27 +91,25 @@ class ListViewController: UIViewController {
                 arrayNotes[index] = note
             }
         }
-        collectionView.reloadData()
+        tableView.reloadData()
     }
 
     func newNote(note: Note) {
         arrayNotes.append(note)
-        collectionView.reloadData()
+        tableView.reloadData()
     }
 }
-extension ListViewController: UICollectionViewDataSource {
-    func numberOfSections(in collectionView: UICollectionView) -> Int {
-        return 1
+extension ListViewController: UITableViewDataSource {
+    func numberOfSections(in tableView: UITableView) -> Int {
+        1
     }
-    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return arrayNotes.count
     }
 
-    func collectionView(
-        _ collectionView: UICollectionView,
-        cellForItemAt indexPath: IndexPath
-    ) -> UICollectionViewCell {
-        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: cellIdentifier, for: indexPath)
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        let cell = tableView.dequeueReusableCell(withIdentifier: cellIdentifier, for: indexPath)
 
         guard let customCell = cell as? NoteCellView else {
             return cell
@@ -129,17 +121,5 @@ extension ListViewController: UICollectionViewDataSource {
         }
 
         return customCell
-    }
-}
-extension ListViewController: UICollectionViewDelegateFlowLayout {
-    func collectionView(
-        _ collectionView: UICollectionView,
-        layout collectionViewLayout: UICollectionViewLayout,
-        sizeForItemAt indexPath: IndexPath
-    ) -> CGSize {
-        return CGSize(
-            width: collectionView.frame.width - cellHorizontalMargin * 2,
-            height: cellHeight
-        )
     }
 }
