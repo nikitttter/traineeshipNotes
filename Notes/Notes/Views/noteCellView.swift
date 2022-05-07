@@ -7,7 +7,7 @@
 
 import UIKit
 
-class NoteCellView: UICollectionViewCell {
+class NoteCellView: UITableViewCell {
     private let titleField = UILabel()
     private let textField = UILabel()
     private let dateField = UILabel()
@@ -15,8 +15,8 @@ class NoteCellView: UICollectionViewCell {
     var dateFormat = "dd.MM.yyyy"
     var closure: ((Note) -> Void)?
 
-    override init(frame: CGRect) {
-        super.init(frame: frame)
+    override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
+        super.init(style: style, reuseIdentifier: reuseIdentifier)
         setupView()
     }
 
@@ -38,25 +38,32 @@ class NoteCellView: UICollectionViewCell {
 
         let recognizer = UITapGestureRecognizer(target: self, action: #selector(handleTap(_:)))
         self.addGestureRecognizer(recognizer)
+
+        self.contentView.clipsToBounds = true
+        self.contentView.layer.cornerRadius = 14.0
+        self.backgroundColor = UIColor(red: 0.898, green: 0.898, blue: 0.898, alpha: 1)
+
+        self.contentView.backgroundColor = .white
         self.clipsToBounds = true
         self.layer.cornerRadius = 14.0
-        self.backgroundColor = .white
+
+        layoutIfNeeded()
     }
 
     private func setupTitleField() {
-        self.addSubview(titleField)
+        self.contentView.addSubview(titleField)
         titleField.translatesAutoresizingMaskIntoConstraints = false
         titleField.topAnchor.constraint(
-            equalTo: self.safeAreaLayoutGuide.topAnchor,
+            equalTo: self.contentView.safeAreaLayoutGuide.topAnchor,
             constant: 10.0
         ).isActive = true
         titleField.heightAnchor.constraint(equalToConstant: 18.0).isActive = true
         titleField.leadingAnchor.constraint(
-            equalTo: self.safeAreaLayoutGuide.leadingAnchor,
+            equalTo: self.contentView.safeAreaLayoutGuide.leadingAnchor,
             constant: 16.0
         ).isActive = true
         titleField.trailingAnchor.constraint(
-            equalTo: self.safeAreaLayoutGuide.trailingAnchor,
+            equalTo: self.contentView.safeAreaLayoutGuide.trailingAnchor,
             constant: -42.0
         ).isActive = true
 
@@ -67,7 +74,7 @@ class NoteCellView: UICollectionViewCell {
     }
 
     private func setupTextField() {
-        self.addSubview(textField)
+        self.contentView.addSubview(textField)
         textField.translatesAutoresizingMaskIntoConstraints = false
         textField.topAnchor.constraint(
             equalTo: titleField.bottomAnchor,
@@ -75,11 +82,11 @@ class NoteCellView: UICollectionViewCell {
         ).isActive = true
         textField.heightAnchor.constraint(equalToConstant: 14.0).isActive = true
         textField.leadingAnchor.constraint(
-            equalTo: self.safeAreaLayoutGuide.leadingAnchor,
+            equalTo: self.contentView.safeAreaLayoutGuide.leadingAnchor,
             constant: 16.0
         ).isActive = true
         textField.trailingAnchor.constraint(
-            equalTo: self.safeAreaLayoutGuide.trailingAnchor,
+            equalTo: self.contentView.safeAreaLayoutGuide.trailingAnchor,
             constant: -16.0
         ).isActive = true
 
@@ -90,13 +97,16 @@ class NoteCellView: UICollectionViewCell {
     }
 
     private func setupDateField() {
-        self.addSubview(dateField)
+        self.contentView.addSubview(dateField)
         dateField.translatesAutoresizingMaskIntoConstraints = false
         dateField.topAnchor.constraint(equalTo: textField.bottomAnchor, constant: 24.0).isActive = true
-        dateField.bottomAnchor.constraint(equalTo: self.safeAreaLayoutGuide.bottomAnchor, constant: -10).isActive = true
+        dateField.bottomAnchor.constraint(
+            equalTo: self.contentView.safeAreaLayoutGuide.bottomAnchor,
+            constant: -10
+        ).isActive = true
         dateField.heightAnchor.constraint(equalToConstant: 10.0).isActive = true
         dateField.leadingAnchor.constraint(
-            equalTo: self.safeAreaLayoutGuide.leadingAnchor,
+            equalTo: self.contentView.safeAreaLayoutGuide.leadingAnchor,
             constant: 16.0
         ).isActive = true
 
@@ -110,6 +120,16 @@ class NoteCellView: UICollectionViewCell {
         if let note = self.model {
             closure?(note)
         }
+    }
+
+    override func layoutSubviews() {
+        super.layoutSubviews()
+        self.contentView.frame = self.contentView.frame.inset(by: UIEdgeInsets(
+            top: 0.0,
+            left: 0.0,
+            bottom: 4.0,
+            right: 0.0
+        ))
     }
 }
 
