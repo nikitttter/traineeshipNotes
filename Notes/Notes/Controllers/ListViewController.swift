@@ -12,9 +12,6 @@ class ListViewController: UIViewController {
 
     var arrayNotes = [Note]()
     private let cellIdentifier = "cellNote"
-    private let cellLineSpacing = 4.0
-    private let cellHorizontalMargin = 16.0
-    private let cellHeight = 90.0
 
     private let tableView = UITableView()
 
@@ -26,15 +23,19 @@ class ListViewController: UIViewController {
         tableView.dataSource = self
         setupTableView()
         setupPlusButton()
-        self.view.backgroundColor = UIColor(red: 0.898, green: 0.898, blue: 0.898, alpha: 1)
+        setupView()
     }
 
     override func viewWillAppear(_ animated: Bool) {
         self.navigationItem.title = NSLocalizedString("listNotes", comment: "")
     }
+
+    private func setupView() {
+        self.view.backgroundColor = UIColor(red: 0.898, green: 0.898, blue: 0.898, alpha: 1)
+    }
+
     private func setupPlusButton() {
         self.view.addSubview(plusButton)
-        view.backgroundColor = .white
         plusButton.bottomAnchor.constraint(
             equalTo: self.view.safeAreaLayoutGuide.bottomAnchor,
             constant: -20.0
