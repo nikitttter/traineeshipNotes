@@ -8,6 +8,13 @@
 import UIKit
 
 class PlusButton: UIButton {
+    var stateButton: ItemState = .main {
+        didSet {
+            let nameImage: String = stateButton == .main ? "AddButton" : "RemoveButton"
+            self.setImage(UIImage(named: nameImage), for: .normal)
+        }
+    }
+
     override init(frame: CGRect) {
         super.init(frame: frame)
         setupSetting()
@@ -19,8 +26,7 @@ class PlusButton: UIButton {
 
     private func setupSetting() {
         self.translatesAutoresizingMaskIntoConstraints = false
-        self.backgroundColor = UIColor(red: 0, green: 0.478, blue: 1, alpha: 1)
-        self.setTitle("+", for: .normal)
+        self.setImage(UIImage(named: "AddButton"), for: .normal)
         self.titleLabel?.numberOfLines = 0
         self.titleLabel?.font = .systemFont(ofSize: 36.0)
         self.titleLabel?.textAlignment = .center

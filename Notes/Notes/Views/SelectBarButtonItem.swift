@@ -7,38 +7,25 @@
 
 import UIKit
 import Foundation
-enum ButtonState {
-    case done, selecting
 
-    mutating func toggle() {
-        switch self {
-        case .done:
-            self = .selecting
-        case .selecting:
-            self = .done
+class SelectBarButtonItem: UIBarButtonItem {
+    var stateButton: ItemState = .main {
+        didSet {
+        self.title = getNextStateText()
         }
     }
 
-    func getNextStateText() -> String {
-        switch self {
-        case .done:
+   private func getNextStateText() -> String {
+        switch stateButton {
+        case .main:
             return NSLocalizedString("selectButton", comment: "")
-        case .selecting:
+        case .additional:
             return NSLocalizedString("doneButton", comment: "")
         }
     }
-}
-
-class SelectBarButtonItem: UIBarButtonItem {
-    var stateButton: ButtonState = .done {
-        didSet {
-        self.title = stateButton.getNextStateText()
-        }
-    }
-
     override init() {
         super.init()
-        self.title = stateButton.getNextStateText()
+        self.title = getNextStateText()
     }
 
     required init?(coder: NSCoder) {

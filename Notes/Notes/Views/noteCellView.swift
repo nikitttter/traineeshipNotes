@@ -11,9 +11,18 @@ class NoteCellView: UITableViewCell {
     private let titleField = UILabel()
     private let textField = UILabel()
     private let dateField = UILabel()
+    private let container = UIView()
+    private let content = UIView()
+    private let checkBox = UICheckBox()
+
     private var model: Note?
     var dateFormat = "dd.MM.yyyy"
     var closure: ((Note) -> Void)?
+
+    private var normalLayoutLeadinfCell: NSLayoutConstraint?
+
+    private let spacingDeleteControl = CGFloat(40)
+    var checked: Bool = false
 
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
@@ -32,38 +41,65 @@ class NoteCellView: UITableViewCell {
     }
 
     private func setupView() {
+        setupContainer()
+        setupContent()
         setupTitleField()
         setupTextField()
         setupDateField()
 
         let recognizer = UITapGestureRecognizer(target: self, action: #selector(handleTap(_:)))
-        self.addGestureRecognizer(recognizer)
+        container.addGestureRecognizer(recognizer)
 
-        self.contentView.clipsToBounds = true
-        self.contentView.layer.cornerRadius = 14.0
-        self.backgroundColor = UIColor(red: 0.898, green: 0.898, blue: 0.898, alpha: 1)
-
-        self.contentView.backgroundColor = .white
         self.clipsToBounds = true
         self.layer.cornerRadius = 14.0
+        self.backgroundColor = UIColor(red: 0.898, green: 0.898, blue: 0.898, alpha: 1)
+        self.container.clipsToBounds = true
+        self.container.layer.cornerRadius = 14
 
-        layoutIfNeeded()
+        self.content.clipsToBounds = true
+        self.content.layer.cornerRadius = 14
+    }
+    func setupContainer() {
+        self.contentView.addSubview(container)
+        self.container.translatesAutoresizingMaskIntoConstraints = false
+        self.container.rightAnchor.constraint(equalTo: self.contentView.rightAnchor).isActive = true
+        self.container.topAnchor.constraint(equalTo: self.contentView.topAnchor).isActive = true
+        self.container.bottomAnchor.constraint(
+            equalTo: self.contentView.bottomAnchor,
+            constant: -4
+        ).isActive = true
+        self.container.leftAnchor.constraint(equalTo: self.contentView.leftAnchor).isActive = true
+
+        container.backgroundColor = .white
+    }
+
+    private func setupContent() {
+        self.container.addSubview(content)
+        self.content.translatesAutoresizingMaskIntoConstraints = false
+        self.content.rightAnchor.constraint(equalTo: self.container.rightAnchor).isActive = true
+        self.content.topAnchor.constraint(equalTo: self.container.topAnchor).isActive = true
+        self.content.bottomAnchor.constraint(
+            equalTo: self.contentView.bottomAnchor
+        ).isActive = true
+
+        normalLayoutLeadinfCell = self.content.leftAnchor.constraint(equalTo: self.container.leftAnchor)
+        normalLayoutLeadinfCell?.isActive = true
     }
 
     private func setupTitleField() {
-        self.contentView.addSubview(titleField)
+        self.content.addSubview(titleField)
         titleField.translatesAutoresizingMaskIntoConstraints = false
         titleField.topAnchor.constraint(
-            equalTo: self.contentView.safeAreaLayoutGuide.topAnchor,
+            equalTo: self.content.topAnchor,
             constant: 10.0
         ).isActive = true
         titleField.heightAnchor.constraint(equalToConstant: 18.0).isActive = true
         titleField.leadingAnchor.constraint(
-            equalTo: self.contentView.safeAreaLayoutGuide.leadingAnchor,
+            equalTo: self.content.leadingAnchor,
             constant: 16.0
         ).isActive = true
         titleField.trailingAnchor.constraint(
-            equalTo: self.contentView.safeAreaLayoutGuide.trailingAnchor,
+            equalTo: self.content.trailingAnchor,
             constant: -42.0
         ).isActive = true
 
@@ -74,7 +110,7 @@ class NoteCellView: UITableViewCell {
     }
 
     private func setupTextField() {
-        self.contentView.addSubview(textField)
+        self.content.addSubview(textField)
         textField.translatesAutoresizingMaskIntoConstraints = false
         textField.topAnchor.constraint(
             equalTo: titleField.bottomAnchor,
@@ -82,11 +118,11 @@ class NoteCellView: UITableViewCell {
         ).isActive = true
         textField.heightAnchor.constraint(equalToConstant: 14.0).isActive = true
         textField.leadingAnchor.constraint(
-            equalTo: self.contentView.safeAreaLayoutGuide.leadingAnchor,
+            equalTo: self.content.leadingAnchor,
             constant: 16.0
         ).isActive = true
         textField.trailingAnchor.constraint(
-            equalTo: self.contentView.safeAreaLayoutGuide.trailingAnchor,
+            equalTo: self.content.trailingAnchor,
             constant: -16.0
         ).isActive = true
 
@@ -97,16 +133,16 @@ class NoteCellView: UITableViewCell {
     }
 
     private func setupDateField() {
-        self.contentView.addSubview(dateField)
+        self.content.addSubview(dateField)
         dateField.translatesAutoresizingMaskIntoConstraints = false
         dateField.topAnchor.constraint(equalTo: textField.bottomAnchor, constant: 24.0).isActive = true
         dateField.bottomAnchor.constraint(
-            equalTo: self.contentView.safeAreaLayoutGuide.bottomAnchor,
+            equalTo: self.content.bottomAnchor,
             constant: -10
         ).isActive = true
         dateField.heightAnchor.constraint(equalToConstant: 10.0).isActive = true
         dateField.leadingAnchor.constraint(
-            equalTo: self.contentView.safeAreaLayoutGuide.leadingAnchor,
+            equalTo: self.content.leadingAnchor,
             constant: 16.0
         ).isActive = true
 
@@ -116,20 +152,70 @@ class NoteCellView: UITableViewCell {
         dateField.textColor = UIColor.black
     }
 
+    private func setupCheckBox() {
+        container.addSubview(checkBox)
+        checkBox.centerYAnchor.constraint(equalTo: content.centerYAnchor).isActive = true
+        checkBox.centerXAnchor.constraint(
+            equalTo: container.leadingAnchor,
+            constant: normalLayoutLeadinfCell!.constant + 20 // 40 / 2
+        ).isActive = true
+        checkBox.heightAnchor.constraint(equalToConstant: 20).isActive = true
+        checkBox.alpha = 0.0
+        checkBox.addTarget(self, action: #selector(checkBoxTapped), for: .touchDown)
+        checkBox.checked = false
+    }
+
     @objc private func handleTap(_ sender: UITapGestureRecognizer) {
         if let note = self.model {
             closure?(note)
         }
     }
 
-    override func layoutSubviews() {
-        super.layoutSubviews()
-        self.contentView.frame = self.contentView.frame.inset(by: UIEdgeInsets(
-            top: 0.0,
-            left: 0.0,
-            bottom: 4.0,
-            right: 0.0
-        ))
+    override func setEditing(_ editing: Bool, animated: Bool) {
+        if editing {
+            setupCheckBox()
+            setVisibleCheckBoxAnimated(true, animated: animated, completion: nil)
+        } else {
+            setVisibleCheckBoxAnimated(false, animated: animated) { [weak self] in
+                self?.checkBox.removeFromSuperview()
+            }
+        }
+    }
+
+    private func setVisibleCheckBoxAnimated(_ visible: Bool, animated: Bool, completion: (() -> Void)?) {
+        guard let constraintValue = self.normalLayoutLeadinfCell?.constant else {
+            return
+        }
+
+        let alpha = visible ? 1.0 : 0.0
+        let targetConstraintValue = visible ? constraintValue + spacingDeleteControl : 0.0
+
+        let durationFirstAnim = animated ? 1.0 : 0.0
+
+        let durationSecondAnim = animated ? 0.5 : 0.0
+
+        if visible { self.layoutIfNeeded() }
+
+        UIView.animate(withDuration: durationFirstAnim) { [weak self] in
+            self?.normalLayoutLeadinfCell?.constant = targetConstraintValue
+            if animated { self?.layoutIfNeeded() }
+        }
+
+        UIView.animate(
+            withDuration: durationSecondAnim,
+            delay: 0.0,
+            options: [],
+            animations: {
+                self.checkBox.alpha = alpha
+            },
+            completion: { _ in
+                completion?()
+            }
+        )
+    }
+
+    @objc private func checkBoxTapped() {
+        checked = !checked
     }
 }
 

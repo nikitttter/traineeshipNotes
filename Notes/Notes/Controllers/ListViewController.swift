@@ -15,7 +15,6 @@ class ListViewController: UIViewController {
     private let cellIdentifier = "cellNote"
     private let cellLineSpacing = 4.0
     private let cellHorizontalMargin = 16.0
-    private let cellHeight = 90.0
 
     private let tableView = UITableView()
 
@@ -34,6 +33,7 @@ class ListViewController: UIViewController {
     override func viewWillAppear(_ animated: Bool) {
         self.navigationItem.title = NSLocalizedString("listNotes", comment: "")
         plusButton.isHidden = true
+        tableView.setEditing(false, animated: false)
     }
 
     override func viewDidAppear(_ animated: Bool) {
@@ -69,7 +69,8 @@ class ListViewController: UIViewController {
         tableView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 26.0).isActive = true
         tableView.bottomAnchor.constraint(equalTo: view.bottomAnchor).isActive = true
         tableView.backgroundColor = UIColor(red: 0.898, green: 0.898, blue: 0.898, alpha: 1)
-        tableView.separatorStyle = .none
+        tableView.separatorStyle =  .none
+        tableView.separatorColor = UIColor(red: 0.898, green: 0.898, blue: 0.898, alpha: 1)
     }
 
     private func setupRightBarButton() {
@@ -166,6 +167,14 @@ class ListViewController: UIViewController {
 
    @objc private func rightBarButtonTapped() {
        rightBarButton.stateButton.toggle()
+       plusButton.stateButton.toggle()
+       switch rightBarButton.stateButton {
+       case .main:
+           tableView.setEditing(false, animated: true)
+       case .additional:
+           tableView.setEditing(true, animated: true)
+       }
+
        print(#function)
     }
 }
