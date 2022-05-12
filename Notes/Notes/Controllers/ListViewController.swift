@@ -13,8 +13,6 @@ class ListViewController: UIViewController {
 
     var arrayNotes = [Note]()
     private let cellIdentifier = "cellNote"
-    private let cellLineSpacing = 4.0
-    private let cellHorizontalMargin = 16.0
 
     private let tableView = UITableView()
 
@@ -30,7 +28,7 @@ class ListViewController: UIViewController {
         setupTableView()
         setupPlusButton()
         setupRightBarButton()
-        self.view.backgroundColor = UIColor(red: 0.898, green: 0.898, blue: 0.898, alpha: 1)
+        setupView()
     }
 
     override func viewWillAppear(_ animated: Bool) {
@@ -42,9 +40,12 @@ class ListViewController: UIViewController {
         showButtonAnimated()
     }
 
+    private func setupView() {
+        self.view.backgroundColor = UIColor(red: 0.898, green: 0.898, blue: 0.898, alpha: 1)
+    }
+
     private func setupPlusButton() {
         self.view.addSubview(plusButton)
-        view.backgroundColor = .white
         plusButton.bottomAnchor.constraint(
             equalTo: self.view.safeAreaLayoutGuide.bottomAnchor,
             constant: -20.0
