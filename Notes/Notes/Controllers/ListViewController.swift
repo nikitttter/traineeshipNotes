@@ -24,6 +24,9 @@ class ListViewController: UIViewController {
 
         tableView.register(NoteCellView.self, forCellReuseIdentifier: cellIdentifier)
         tableView.dataSource = self
+        tableView.delegate = self
+        tableView.allowsMultipleSelectionDuringEditing = true
+
         setupTableView()
         setupPlusButton()
         setupRightBarButton()
@@ -33,7 +36,6 @@ class ListViewController: UIViewController {
     override func viewWillAppear(_ animated: Bool) {
         self.navigationItem.title = NSLocalizedString("listNotes", comment: "")
         plusButton.isHidden = true
-        tableView.setEditing(false, animated: false)
     }
 
     override func viewDidAppear(_ animated: Bool) {
@@ -79,8 +81,22 @@ class ListViewController: UIViewController {
         navigationItem.rightBarButtonItem = rightBarButton
     }
     @objc private func plusButtonTapped() {
-        hideButtonAnimated { [weak self] in
-            self?.routeToNoteViewController(model: nil)
+        switch plusButton.stateButton {
+        case .main:
+            hideButtonAnimated { [weak self] in
+                self?.routeToNoteViewController(model: nil)
+            }
+        case .additional:
+            if tableView.indexPathsForSelectedRows != nil {
+                repeat {
+                    if let indexPath = tableView.indexPathForSelectedRow {
+                        self.tableView(tableView, commit: .delete, forRowAt: indexPath)
+                    }
+                } while tableView.indexPathsForSelectedRows != nil
+                rightBarButtonTapped()
+            } else {
+                showErrorAlert(NSLocalizedString("notSelectedNotes", comment: ""))
+            }
         }
     }
 
@@ -122,7 +138,7 @@ class ListViewController: UIViewController {
         plusButton.isHidden = false
 
         UIView.animate(
-            withDuration: 2,
+            withDuration: 1,
             delay: 0,
             usingSpringWithDamping: 0.6,
             initialSpringVelocity: 0.9,
@@ -138,7 +154,7 @@ class ListViewController: UIViewController {
         let initialButtonY = self.plusButton.frame.minY
 
         UIView.animateKeyframes(
-            withDuration: 1.5,
+            withDuration: 0.5,
             delay: 0,
             options: [],
             animations: {
@@ -174,8 +190,16 @@ class ListViewController: UIViewController {
        case .additional:
            tableView.setEditing(true, animated: true)
        }
+    }
 
-       print(#function)
+    private func showErrorAlert(_ text: String) {
+        let alert = UIAlertController(
+            title: NSLocalizedString("error", comment: ""),
+            message: text,
+            preferredStyle: .alert
+        )
+        alert.addAction(UIAlertAction(title: "OK", style: .cancel, handler: nil))
+        present(alert, animated: true, completion: nil)
     }
 }
 extension ListViewController: UITableViewDataSource {
@@ -195,10 +219,24 @@ extension ListViewController: UITableViewDataSource {
         }
 
         customCell.setData(arrayNotes[indexPath.row])
-        customCell.closure = { [weak self] model in
-            self?.routeToNoteViewController(model: model)
-        }
-
         return customCell
+    }
+
+    func tableView(
+        _ tableView: UITableView,
+        commit editingStyle: UITableViewCell.EditingStyle,
+        forRowAt indexPath: IndexPath
+    ) {
+        if editingStyle == .delete {
+            arrayNotes.remove(at: indexPath.row)
+            tableView.deleteRows(at: [indexPath], with: .left)
+        }
+    }
+}
+extension ListViewController: UITableViewDelegate {
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        if !tableView.isEditing {
+            self.routeToNoteViewController(model: arrayNotes[indexPath.row])
+        }
     }
 }

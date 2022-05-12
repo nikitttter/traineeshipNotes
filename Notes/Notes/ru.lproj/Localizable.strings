@@ -12,3 +12,4 @@
 "date" = "Дата";
 "listNotes" = "Заметки";
 "selectButton" = "Выбрать";
+"notSelectedNotes" = "Вы не выбрали ни одной заметки";

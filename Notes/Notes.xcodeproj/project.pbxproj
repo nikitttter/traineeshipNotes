@@ -14,7 +14,6 @@
 		119E76032804501B002A780A /* NoteArrayDataProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 119E76022804501B002A780A /* NoteArrayDataProvider.swift */; };
 		11C212472826D13800ED4449 /* SelectBarButtonItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11C212462826D13800ED4449 /* SelectBarButtonItem.swift */; };
 		11C21249282800EF00ED4449 /* ItemState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11C21248282800EF00ED4449 /* ItemState.swift */; };
-		11CF6105282B20D7004670FF /* UICheckBox.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11CF6104282B20D7004670FF /* UICheckBox.swift */; };
 		11DACDF727F0AF1100623F11 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11DACDF627F0AF1100623F11 /* AppDelegate.swift */; };
 		11DACDF927F0AF1100623F11 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11DACDF827F0AF1100623F11 /* SceneDelegate.swift */; };
 		11DACDFB27F0AF1100623F11 /* NoteViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11DACDFA27F0AF1100623F11 /* NoteViewController.swift */; };
@@ -32,7 +31,6 @@
 		119E76022804501B002A780A /* NoteArrayDataProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NoteArrayDataProvider.swift; sourceTree = "<group>"; };
 		11C212462826D13800ED4449 /* SelectBarButtonItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = SelectBarButtonItem.swift; path = Notes/Views/SelectBarButtonItem.swift; sourceTree = SOURCE_ROOT; };
 		11C21248282800EF00ED4449 /* ItemState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ItemState.swift; sourceTree = "<group>"; };
-		11CF6104282B20D7004670FF /* UICheckBox.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UICheckBox.swift; sourceTree = "<group>"; };
 		11DACDF327F0AF1100623F11 /* Notes.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Notes.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		11DACDF627F0AF1100623F11 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		11DACDF827F0AF1100623F11 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -67,7 +65,6 @@
 			isa = PBXGroup;
 			children = (
 				118B1E192802367D005D731C /* PlusButton.swift */,
-				11CF6104282B20D7004670FF /* UICheckBox.swift */,
 				118B1E1728022AA0005D731C /* NoteCellView.swift */,
 				11C212462826D13800ED4449 /* SelectBarButtonItem.swift */,
 			);
@@ -209,7 +206,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				11CF6105282B20D7004670FF /* UICheckBox.swift in Sources */,
 				11DACDFB27F0AF1100623F11 /* NoteViewController.swift in Sources */,
 				118B1E1A2802367D005D731C /* PlusButton.swift in Sources */,
 				11C212472826D13800ED4449 /* SelectBarButtonItem.swift in Sources */,

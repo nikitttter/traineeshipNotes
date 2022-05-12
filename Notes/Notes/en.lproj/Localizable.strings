@@ -12,3 +12,4 @@
 "date" = "Date";
 "listNotes" = "Notes";
 "selectButton" = "Select";
+"notSelectedNotes" = "You have not selected any notes";
