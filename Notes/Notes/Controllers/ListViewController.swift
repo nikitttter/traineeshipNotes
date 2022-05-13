@@ -233,6 +233,20 @@ extension ListViewController: UITableViewDataSource {
             tableView.deleteRows(at: [indexPath], with: .left)
         }
     }
+
+    func tableView(
+        _ tableView: UITableView,
+        trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath
+    ) -> UISwipeActionsConfiguration? {
+        let deleteAction = UIContextualAction(style: .normal, title: "delete") { [weak self] _, _, _ in
+            self?.arrayNotes.remove(at: indexPath.row)
+            tableView.deleteRows(at: [indexPath], with: .left)
+        }
+
+        deleteAction.backgroundColor = .red
+        let config = UISwipeActionsConfiguration(actions: [deleteAction])
+        return config
+    }
 }
 extension ListViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {

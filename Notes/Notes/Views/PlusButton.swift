@@ -10,8 +10,7 @@ import UIKit
 class PlusButton: UIButton {
     var stateButton: ItemState = .main {
         didSet {
-            let nameImage: String = stateButton == .main ? "AddButton" : "RemoveButton"
-            self.setImage(UIImage(named: nameImage), for: .normal)
+            changeImageAnimated()
         }
     }
 
@@ -33,5 +32,19 @@ class PlusButton: UIButton {
         self.widthAnchor.constraint(equalToConstant: 50.0).isActive = true
         self.heightAnchor.constraint(equalTo: self.widthAnchor).isActive = true
         self.contentVerticalAlignment = .bottom
+    }
+
+    private func changeImageAnimated() {
+        let nameImage: String = stateButton == .main ? "AddButton" : "RemoveButton"
+
+        UIView.transition(
+            with: self,
+            duration: 1,
+            options: .transitionFlipFromLeft,
+            animations: { [weak self] in
+                self?.setImage(UIImage(named: nameImage), for: .normal)
+            },
+            completion: nil
+        )
     }
 }
