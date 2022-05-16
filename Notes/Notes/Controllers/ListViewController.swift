@@ -16,6 +16,8 @@ class ListViewController: UIViewController {
 
     private let tableView = UITableView()
 
+    private let backgroudColor = UIColor(red: 0.898, green: 0.898, blue: 0.898, alpha: 1)
+
     override func viewDidLoad() {
         super.viewDidLoad()
         arrayNotes = NoteArrayDataProvider.getInstance().getSavedNotes() ?? [Note]()
@@ -37,23 +39,20 @@ class ListViewController: UIViewController {
     }
 
     override func viewDidAppear(_ animated: Bool) {
-        showButtonAnimated()
+        plusButton.showButtonAnimated()
     }
 
     private func setupView() {
-        self.view.backgroundColor = UIColor(red: 0.898, green: 0.898, blue: 0.898, alpha: 1)
+        self.view.backgroundColor = backgroudColor
     }
 
     private func setupPlusButton() {
         self.view.addSubview(plusButton)
-        plusButton.bottomAnchor.constraint(
-            equalTo: self.view.safeAreaLayoutGuide.bottomAnchor,
-            constant: -20.0
-        ).isActive = true
-        plusButton.trailingAnchor.constraint(
-            equalTo: self.view.safeAreaLayoutGuide.trailingAnchor,
-            constant: -19.0
-        ).isActive = true
+
+        NSLayoutConstraint.activate([
+            plusButton.bottomAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.bottomAnchor, constant: -20.0),
+            plusButton.trailingAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.trailingAnchor, constant: -19.0)
+        ])
 
         plusButton.addTarget(self, action: #selector(plusButtonTapped), for: .touchUpInside)
     }
@@ -61,19 +60,16 @@ class ListViewController: UIViewController {
     func setupTableView() {
         view.addSubview(tableView)
         tableView.translatesAutoresizingMaskIntoConstraints = false
-        tableView.trailingAnchor.constraint(
-            equalTo: view.safeAreaLayoutGuide.trailingAnchor,
-            constant: -16
-        ).isActive = true
-        tableView.leadingAnchor.constraint(
-            equalTo: view.safeAreaLayoutGuide.leadingAnchor,
-            constant: 16
-        ).isActive = true
-        tableView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 26.0).isActive = true
-        tableView.bottomAnchor.constraint(equalTo: view.bottomAnchor).isActive = true
-        tableView.backgroundColor = UIColor(red: 0.898, green: 0.898, blue: 0.898, alpha: 1)
+
+        NSLayoutConstraint.activate([
+            tableView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -16),
+            tableView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 16),
+            tableView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 26.0),
+            tableView.bottomAnchor.constraint(equalTo: view.bottomAnchor)
+        ])
+
+        tableView.backgroundColor = backgroudColor
         tableView.separatorStyle =  .none
-        tableView.separatorColor = UIColor(red: 0.898, green: 0.898, blue: 0.898, alpha: 1)
     }
 
     private func setupRightBarButton() {
@@ -81,10 +77,11 @@ class ListViewController: UIViewController {
         rightBarButton.action = #selector(rightBarButtonTapped)
         navigationItem.rightBarButtonItem = rightBarButton
     }
+
     @objc private func plusButtonTapped() {
         switch plusButton.stateButton {
         case .main:
-            hideButtonAnimated { [weak self] in
+            plusButton.hideButtonAnimated { [weak self] in
                 self?.routeToNoteViewController(model: nil)
             }
         case .additional:
@@ -131,55 +128,6 @@ class ListViewController: UIViewController {
     func newNote(note: Note) {
         arrayNotes.append(note)
         tableView.reloadData()
-    }
-
-    private func showButtonAnimated() {
-        let initialButtonY = self.plusButton.frame.minY
-        plusButton.frame.origin.y = UIScreen.main.bounds.maxY
-        plusButton.isHidden = false
-
-        UIView.animate(
-            withDuration: 1,
-            delay: 0,
-            usingSpringWithDamping: 0.6,
-            initialSpringVelocity: 0.9,
-            options: [],
-            animations: { [weak self] in
-                self?.plusButton.frame.origin.y = initialButtonY
-            },
-            completion: nil
-        )
-    }
-
-    private func hideButtonAnimated(completion: (() -> Void)?) {
-        let initialButtonY = self.plusButton.frame.minY
-
-        UIView.animateKeyframes(
-            withDuration: 0.5,
-            delay: 0,
-            options: [],
-            animations: {
-                UIView.addKeyframe(
-                    withRelativeStartTime: 0,
-                    relativeDuration: 0.6,
-                    animations: { [weak self] in
-                        self?.plusButton.frame.origin.y = initialButtonY - 20
-                    }
-                )
-                UIView.addKeyframe(
-                    withRelativeStartTime: 0.6,
-                    relativeDuration: 0.4,
-                    animations: { [weak self] in
-                        self?.plusButton.frame.origin.y = UIScreen.main.bounds.maxY
-                    }
-                )
-            },
-            completion: { [weak plusButton] _ in
-                plusButton?.isHidden = true
-                plusButton?.frame.origin.y = initialButtonY
-                completion?()
-            }
-        )
     }
 
     @objc private func rightBarButtonTapped() {
@@ -242,7 +190,7 @@ extension ListViewController: UITableViewDataSource {
         }
 
         deleteAction.image = UIImage(named: "RemoveButton")
-        deleteAction.backgroundColor = UIColor(red: 0.898, green: 0.898, blue: 0.898, alpha: 1)
+        deleteAction.backgroundColor = backgroudColor
 
         let config = UISwipeActionsConfiguration(actions: [deleteAction])
         return config

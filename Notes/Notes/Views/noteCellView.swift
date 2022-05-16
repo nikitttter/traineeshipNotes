@@ -15,6 +15,9 @@ class NoteCellView: UITableViewCell {
     private var model: Note?
     var dateFormat = "dd.MM.yyyy"
 
+    private let borderColor = UIColor(red: 0.898, green: 0.898, blue: 0.898, alpha: 1)
+    private let bodyBackgroundColor = UIColor.white
+
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
 
@@ -42,35 +45,32 @@ class NoteCellView: UITableViewCell {
             self.contentView.layer.cornerRadius = 14.0
             self.contentView.layer.borderWidth = 2.0
 
-            self.backgroundColor = UIColor(red: 0.898, green: 0.898, blue: 0.898, alpha: 1)
+            self.backgroundColor = borderColor
             self.layer.borderWidth = 0.0
-            self.contentView.backgroundColor = UIColor.white
-            self.contentView.layer.borderColor = UIColor(red: 0.898, green: 0.898, blue: 0.898, alpha: 1).cgColor
+            self.contentView.backgroundColor = bodyBackgroundColor
+            self.contentView.layer.borderColor = borderColor.cgColor
 
         case false:
             self.clipsToBounds = true
             self.layer.cornerRadius = 14.0
-            self.layer.borderColor = UIColor(red: 0.898, green: 0.898, blue: 0.898, alpha: 1).cgColor
+            self.layer.borderColor = borderColor.cgColor
 
-            self.backgroundColor = UIColor.white
+            self.backgroundColor = bodyBackgroundColor
             self.layer.borderWidth = 2.0
-            self.contentView.backgroundColor = .clear
-            self.contentView.layer.borderColor = UIColor.clear.cgColor
+            self.contentView.backgroundColor = bodyBackgroundColor
+            self.contentView.layer.borderColor = bodyBackgroundColor.cgColor
         }
     }
 
     private func setupTitleField() {
         self.contentView.addSubview(titleField)
         titleField.translatesAutoresizingMaskIntoConstraints = false
-        titleField.topAnchor.constraint(
-            equalTo: self.contentView.topAnchor,
-            constant: 10.0
-        ).isActive = true
-        titleField.heightAnchor.constraint(equalToConstant: 18.0).isActive = true
-        titleField.leadingAnchor.constraint(
-            equalTo: self.contentView.leadingAnchor,
-            constant: 16.0
-        ).isActive = true
+
+        NSLayoutConstraint.activate([
+            titleField.topAnchor.constraint(equalTo: self.contentView.topAnchor, constant: 10.0),
+            titleField.heightAnchor.constraint(equalToConstant: 18.0),
+            titleField.leadingAnchor.constraint(equalTo: self.contentView.leadingAnchor, constant: 16.0)
+        ])
 
         titleField.isUserInteractionEnabled = false
 
@@ -81,15 +81,12 @@ class NoteCellView: UITableViewCell {
     private func setupTextField() {
         self.contentView.addSubview(textField)
         textField.translatesAutoresizingMaskIntoConstraints = false
-        textField.topAnchor.constraint(
-            equalTo: titleField.bottomAnchor,
-            constant: 4.0
-        ).isActive = true
-        textField.heightAnchor.constraint(equalToConstant: 14.0).isActive = true
-        textField.leadingAnchor.constraint(
-            equalTo: self.contentView.leadingAnchor,
-            constant: 16.0
-        ).isActive = true
+
+        NSLayoutConstraint.activate([
+            textField.topAnchor.constraint(equalTo: titleField.bottomAnchor, constant: 4.0),
+            textField.heightAnchor.constraint(equalToConstant: 14.0),
+            textField.leadingAnchor.constraint(equalTo: self.contentView.leadingAnchor, constant: 16.0)
+        ])
 
         textField.isUserInteractionEnabled = false
 
@@ -100,16 +97,13 @@ class NoteCellView: UITableViewCell {
     private func setupDateField() {
         self.contentView.addSubview(dateField)
         dateField.translatesAutoresizingMaskIntoConstraints = false
-        dateField.topAnchor.constraint(equalTo: textField.bottomAnchor, constant: 24.0).isActive = true
-        dateField.bottomAnchor.constraint(
-            equalTo: self.contentView.bottomAnchor,
-            constant: -10
-        ).isActive = true
-        dateField.heightAnchor.constraint(equalToConstant: 10.0).isActive = true
-        dateField.leadingAnchor.constraint(
-            equalTo: self.contentView.leadingAnchor,
-            constant: 16.0
-        ).isActive = true
+
+        NSLayoutConstraint.activate([
+            dateField.topAnchor.constraint(equalTo: textField.bottomAnchor, constant: 24.0),
+            dateField.bottomAnchor.constraint(equalTo: self.contentView.bottomAnchor, constant: -10),
+            dateField.heightAnchor.constraint(equalToConstant: 10.0),
+            dateField.leadingAnchor.constraint(equalTo: self.contentView.leadingAnchor, constant: 16.0)
+        ])
 
         dateField.isUserInteractionEnabled = false
 
