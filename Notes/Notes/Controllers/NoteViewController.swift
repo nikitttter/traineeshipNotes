@@ -99,7 +99,7 @@ class NoteViewController: UIViewController {
             return
         }
         dateField.translatesAutoresizingMaskIntoConstraints = false
-        
+
         NSLayoutConstraint.activate([
             dateField.leadingAnchor.constraint(equalTo: superView.leadingAnchor, constant: 20),
             dateField.trailingAnchor.constraint(equalTo: superView.trailingAnchor, constant: -20),
@@ -153,16 +153,6 @@ class NoteViewController: UIViewController {
         noteTextField.resignFirstResponder()
     }
 
-    private func showErrorAlert(_ text: String) {
-        let alert = UIAlertController(
-            title: NSLocalizedString("error", comment: ""),
-            message: text,
-            preferredStyle: .alert
-        )
-        alert.addAction(UIAlertAction(title: "OK", style: .cancel, handler: nil))
-        present(alert, animated: true, completion: nil)
-    }
-
     private func saveModel() {
         if data == nil {
             data = Note(title: titleTextField.text ?? String(), text: noteTextField.text, date: currentDate)
@@ -177,7 +167,7 @@ class NoteViewController: UIViewController {
         saveModel()
 
         guard !self.isNoteEmpty() else {
-            showErrorAlert(NSLocalizedString("emptyNote", comment: ""))
+            AlertManager.showErrorAlert(from: self, text: NSLocalizedString("emptyNote", comment: ""))
             return
         }
 

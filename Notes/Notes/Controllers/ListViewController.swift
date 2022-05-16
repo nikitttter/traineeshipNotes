@@ -93,7 +93,7 @@ class ListViewController: UIViewController {
                 } while tableView.indexPathsForSelectedRows != nil
                 rightBarButtonTapped()
             } else {
-                showErrorAlert(NSLocalizedString("notSelectedNotes", comment: ""))
+                AlertManager.showErrorAlert(from: self, text: NSLocalizedString("notSelectedNotes", comment: ""))
             }
         }
     }
@@ -135,16 +135,6 @@ class ListViewController: UIViewController {
         rightBarButton.stateButton.toggle()
         plusButton.stateButton.toggle()
     }
-
-    private func showErrorAlert(_ text: String) {
-        let alert = UIAlertController(
-            title: NSLocalizedString("error", comment: ""),
-            message: text,
-            preferredStyle: .alert
-        )
-        alert.addAction(UIAlertAction(title: "OK", style: .cancel, handler: nil))
-        present(alert, animated: true, completion: nil)
-    }
 }
 extension ListViewController: UITableViewDataSource {
     func numberOfSections(in tableView: UITableView) -> Int {
@@ -184,8 +174,7 @@ extension ListViewController: UITableViewDataSource {
         let labelText = NSLocalizedString("labelDelete", comment: "")
 
         let deleteAction = UIContextualAction(style: .normal, title: labelText) { [weak self] _, _, complete in
-            self?.arrayNotes.remove(at: indexPath.row)
-            tableView.deleteRows(at: [indexPath], with: .left)
+            self?.tableView(tableView, commit: .delete, forRowAt: indexPath)
             complete(true)
         }
 

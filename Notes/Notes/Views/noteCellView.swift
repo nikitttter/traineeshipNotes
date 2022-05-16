@@ -57,8 +57,8 @@ class NoteCellView: UITableViewCell {
 
             self.backgroundColor = bodyBackgroundColor
             self.layer.borderWidth = 2.0
-            self.contentView.backgroundColor = bodyBackgroundColor
-            self.contentView.layer.borderColor = bodyBackgroundColor.cgColor
+            self.contentView.backgroundColor = UIColor.clear
+            self.contentView.layer.borderColor = UIColor.clear.cgColor
         }
     }
 
