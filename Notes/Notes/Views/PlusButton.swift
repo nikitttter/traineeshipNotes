@@ -39,7 +39,7 @@ class PlusButton: UIButton {
 
         UIView.transition(
             with: self,
-            duration: 1,
+            duration: 0.3,
             options: .transitionFlipFromLeft,
             animations: { [weak self] in
                 self?.setImage(UIImage(named: nameImage), for: .normal)

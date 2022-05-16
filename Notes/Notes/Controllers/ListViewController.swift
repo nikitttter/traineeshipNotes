@@ -182,15 +182,10 @@ class ListViewController: UIViewController {
         )
     }
 
-   @objc private func rightBarButtonTapped() {
-       rightBarButton.stateButton.toggle()
-       plusButton.stateButton.toggle()
-       switch rightBarButton.stateButton {
-       case .main:
-           tableView.setEditing(false, animated: true)
-       case .additional:
-           tableView.setEditing(true, animated: true)
-       }
+    @objc private func rightBarButtonTapped() {
+        tableView.setEditing(!tableView.isEditing, animated: true)
+        rightBarButton.stateButton.toggle()
+        plusButton.stateButton.toggle()
     }
 
     private func showErrorAlert(_ text: String) {
@@ -238,14 +233,27 @@ extension ListViewController: UITableViewDataSource {
         _ tableView: UITableView,
         trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath
     ) -> UISwipeActionsConfiguration? {
-        let deleteAction = UIContextualAction(style: .normal, title: "delete") { [weak self] _, _, _ in
+        let labelText = NSLocalizedString("labelDelete", comment: "")
+
+        let deleteAction = UIContextualAction(style: .normal, title: labelText) { [weak self] _, _, complete in
             self?.arrayNotes.remove(at: indexPath.row)
             tableView.deleteRows(at: [indexPath], with: .left)
+            complete(true)
         }
 
-        deleteAction.backgroundColor = .red
+        deleteAction.image = UIImage(named: "RemoveButton")
+        deleteAction.backgroundColor = UIColor(red: 0.898, green: 0.898, blue: 0.898, alpha: 1)
+
         let config = UISwipeActionsConfiguration(actions: [deleteAction])
         return config
+    }
+
+    func tableView(_ tableView: UITableView, didEndEditingRowAt indexPath: IndexPath?) {
+        rightBarButton.isEnabled = true
+    }
+
+    func tableView(_ tableView: UITableView, willBeginEditingRowAt indexPath: IndexPath) {
+        rightBarButton.isEnabled = false
     }
 }
 extension ListViewController: UITableViewDelegate {

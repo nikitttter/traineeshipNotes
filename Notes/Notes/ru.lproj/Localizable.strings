@@ -13,3 +13,4 @@
 "listNotes" = "Заметки";
 "selectButton" = "Выбрать";
 "notSelectedNotes" = "Вы не выбрали ни одной заметки";
+"labelDelete" = "Удалить";

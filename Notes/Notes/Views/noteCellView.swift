@@ -17,6 +17,10 @@ class NoteCellView: UITableViewCell {
 
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
+
+        setupTitleField()
+        setupTextField()
+        setupDateField()
         setupView()
     }
 
@@ -31,18 +35,28 @@ class NoteCellView: UITableViewCell {
         dateField.setText(date: note.date, format: dateFormat)
     }
 
-    private func setupView() {
-        setupTitleField()
-        setupTextField()
-        setupDateField()
-        self.layer.borderWidth = 2
-        self.layer.borderColor = UIColor(red: 0.898, green: 0.898, blue: 0.898, alpha: 1).cgColor
+    func setupView(editing: Bool = false) {
+        switch editing {
+        case true:
+            self.contentView.clipsToBounds = true
+            self.contentView.layer.cornerRadius = 14.0
+            self.contentView.layer.borderWidth = 2.0
 
-        self.clipsToBounds = true
-        self.layer.cornerRadius = 14.0
-        self.backgroundColor = UIColor(red: 0.898, green: 0.898, blue: 0.898, alpha: 1)
+            self.backgroundColor = UIColor(red: 0.898, green: 0.898, blue: 0.898, alpha: 1)
+            self.layer.borderWidth = 0.0
+            self.contentView.backgroundColor = UIColor.white
+            self.contentView.layer.borderColor = UIColor(red: 0.898, green: 0.898, blue: 0.898, alpha: 1).cgColor
 
-        self.backgroundColor = .white
+        case false:
+            self.clipsToBounds = true
+            self.layer.cornerRadius = 14.0
+            self.layer.borderColor = UIColor(red: 0.898, green: 0.898, blue: 0.898, alpha: 1).cgColor
+
+            self.backgroundColor = UIColor.white
+            self.layer.borderWidth = 2.0
+            self.contentView.backgroundColor = .clear
+            self.contentView.layer.borderColor = UIColor.clear.cgColor
+        }
     }
 
     private func setupTitleField() {
@@ -101,6 +115,14 @@ class NoteCellView: UITableViewCell {
 
         dateField.font = UIFont.systemFont(ofSize: 10.0)
         dateField.textColor = UIColor.black
+    }
+
+    override func setEditing(_ editing: Bool, animated: Bool) {
+        super.setEditing(editing, animated: true)
+
+        if self.editingStyle == .delete {
+            setupView(editing: editing)
+        }
     }
 }
 
