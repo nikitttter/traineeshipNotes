@@ -11,7 +11,7 @@ import Foundation
 class SelectBarButtonItem: UIBarButtonItem {
     var stateButton: ItemState = .main {
         didSet {
-        self.title = getNextStateText()
+            self.title = getNextStateText()
         }
     }
 

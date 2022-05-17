@@ -39,6 +39,7 @@ class ListViewController: UIViewController {
     }
 
     override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
         plusButton.showButtonAnimated()
     }
 
@@ -69,7 +70,7 @@ class ListViewController: UIViewController {
         ])
 
         tableView.backgroundColor = backgroudColor
-        tableView.separatorStyle =  .none
+        tableView.separatorStyle = .none
     }
 
     private func setupRightBarButton() {
