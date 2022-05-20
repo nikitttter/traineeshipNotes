@@ -11,52 +11,27 @@ struct Note: Codable {
     var title: String
     var text: String
     var date: Date
-    var id: String
     var isEmpty: Bool {
         return title.isEmpty && text.isEmpty
     }
 
-    enum CodingKeys: CodingKey {
-        case title, text, date, id
+    let id: String = UUID().uuidString
+    var online: Bool = false
+
+    enum CodingKeys: String, CodingKey {
+        case title = "header"
+        case text
+        case date
     }
 
-    private let defaults = UserDefaults.standard
-    static private let dateFormat = "dd-MM-yyyy"
-
-    init (title: String, text: String, date: Date) {
+    init (title: String, text: String, date: Date, online: Bool = false) {
         self.title = title
         self.text = text
         self.date = date
-        self.id = UUID().uuidString
+        self.online = online
     }
 
-    func getEncodedData() -> Data? {
-        let dateFormatter = DateFormatter()
-        dateFormatter.dateFormat = Note.dateFormat
-
-        let encoder = JSONEncoder()
-        encoder.dateEncodingStrategy = .formatted(dateFormatter)
-
-        do {
-            return try encoder.encode(self)
-        } catch let encodeError {
-            print(encodeError)
-            return nil
-        }
-    }
-
-    static func getDecodedData(from item: Data) -> Note? {
-        let dateFormatter = DateFormatter()
-        dateFormatter.dateFormat = dateFormat
-
-        let decoder = JSONDecoder()
-        decoder.dateDecodingStrategy = .formatted(dateFormatter)
-
-        do {
-            return try decoder.decode(Note.self, from: item)
-        } catch let decodedError {
-            print(decodedError)
-            return nil
-        }
+    func getOnlineNote() -> Note {
+        return Note(title: self.title, text: self.text, date: self.date, online: true)
     }
 }
