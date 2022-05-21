@@ -43,6 +43,11 @@ class ListViewController: UIViewController {
         plusButton.showButtonAnimated()
     }
 
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        tableView.setEditing(false, animated: false)
+    }
+
     private func setupView() {
         self.view.backgroundColor = backgroudColor
     }
@@ -132,9 +137,14 @@ class ListViewController: UIViewController {
     }
 
     @objc private func rightBarButtonTapped() {
-        tableView.setEditing(!tableView.isEditing, animated: true)
-        rightBarButton.stateButton.toggle()
-        plusButton.stateButton.toggle()
+        switch (tableView.isEditing, rightBarButton.stateButton) {
+        case (true, ItemState.main):
+            tableView.setEditing(false, animated: false)
+        default:
+            rightBarButton.stateButton.toggle()
+            plusButton.stateButton.toggle()
+            tableView.setEditing(!tableView.isEditing, animated: true)
+        }
     }
 }
 extension ListViewController: UITableViewDataSource {
@@ -184,14 +194,6 @@ extension ListViewController: UITableViewDataSource {
 
         let config = UISwipeActionsConfiguration(actions: [deleteAction])
         return config
-    }
-
-    func tableView(_ tableView: UITableView, didEndEditingRowAt indexPath: IndexPath?) {
-        rightBarButton.isEnabled = true
-    }
-
-    func tableView(_ tableView: UITableView, willBeginEditingRowAt indexPath: IndexPath) {
-        rightBarButton.isEnabled = false
     }
 }
 extension ListViewController: UITableViewDelegate {
