@@ -16,7 +16,7 @@ class NoteCellView: UITableViewCell {
     var dateFormat = "dd.MM.yyyy"
 
     private let bodyBackgroundColor = UIColor.white
-    private var circleMask: CAShapeLayer?
+    private var circleMask = CAShapeLayer()
     private let verticalPadding = 2.0
 
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
@@ -109,9 +109,7 @@ class NoteCellView: UITableViewCell {
     override func layoutSubviews() {
         super.layoutSubviews()
 
-        if circleMask == nil {
-            circleMask = CAShapeLayer()
-            circleMask!.path = UIBezierPath(roundedRect: CGRect(
+            circleMask.path = UIBezierPath(roundedRect: CGRect(
                 x: self.bounds.minX,
                 y: self.bounds.minY,
                 width: self.frame.width,
@@ -119,7 +117,6 @@ class NoteCellView: UITableViewCell {
             ), cornerRadius: 14.0).cgPath
 
             self.layer.mask = circleMask
-        }
     }
 }
 
