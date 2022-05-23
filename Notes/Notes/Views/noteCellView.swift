@@ -15,8 +15,9 @@ class NoteCellView: UITableViewCell {
     private var model: Note?
     var dateFormat = "dd.MM.yyyy"
 
-    private let borderColor = UIColor(red: 0.898, green: 0.898, blue: 0.898, alpha: 1)
     private let bodyBackgroundColor = UIColor.white
+    private var circleMask = CAShapeLayer()
+    private let verticalPadding = 2.0
 
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
@@ -38,28 +39,8 @@ class NoteCellView: UITableViewCell {
         dateField.setText(date: note.date, format: dateFormat)
     }
 
-    func setupView(editing: Bool = false) {
-        switch editing {
-        case true:
-            self.contentView.clipsToBounds = true
-            self.contentView.layer.cornerRadius = 14.0
-            self.contentView.layer.borderWidth = 2.0
-
-            self.backgroundColor = borderColor
-            self.layer.borderWidth = 0.0
-            self.contentView.backgroundColor = bodyBackgroundColor
-            self.contentView.layer.borderColor = borderColor.cgColor
-
-        case false:
-            self.clipsToBounds = true
-            self.layer.cornerRadius = 14.0
-            self.layer.borderColor = borderColor.cgColor
-
+    func setupView() {
             self.backgroundColor = bodyBackgroundColor
-            self.layer.borderWidth = 2.0
-            self.contentView.backgroundColor = UIColor.clear
-            self.contentView.layer.borderColor = UIColor.clear.cgColor
-        }
     }
 
     private func setupTitleField() {
@@ -67,7 +48,10 @@ class NoteCellView: UITableViewCell {
         titleField.translatesAutoresizingMaskIntoConstraints = false
 
         NSLayoutConstraint.activate([
-            titleField.topAnchor.constraint(equalTo: self.contentView.topAnchor, constant: 10.0),
+            titleField.topAnchor.constraint(
+                equalTo: self.contentView.topAnchor,
+                constant: 10.0 + verticalPadding
+            ),
             titleField.heightAnchor.constraint(equalToConstant: 18.0),
             titleField.leadingAnchor.constraint(equalTo: self.contentView.leadingAnchor, constant: 16.0)
         ])
@@ -100,7 +84,10 @@ class NoteCellView: UITableViewCell {
 
         NSLayoutConstraint.activate([
             dateField.topAnchor.constraint(equalTo: textField.bottomAnchor, constant: 24.0),
-            dateField.bottomAnchor.constraint(equalTo: self.contentView.bottomAnchor, constant: -10),
+            dateField.bottomAnchor.constraint(
+                equalTo: self.contentView.bottomAnchor,
+                constant: -10.0 - verticalPadding
+            ),
             dateField.heightAnchor.constraint(equalToConstant: 10.0),
             dateField.leadingAnchor.constraint(equalTo: self.contentView.leadingAnchor, constant: 16.0)
         ])
@@ -112,11 +99,24 @@ class NoteCellView: UITableViewCell {
     }
 
     override func setEditing(_ editing: Bool, animated: Bool) {
-        super.setEditing(editing, animated: true)
-
-        if self.editingStyle == .delete {
-            setupView(editing: editing)
+        if self.isEditing && self.isEditing == editing {
+            self.isEditing = false
         }
+
+        super.setEditing(editing, animated: animated)
+    }
+
+    override func layoutSubviews() {
+        super.layoutSubviews()
+
+            circleMask.path = UIBezierPath(roundedRect: CGRect(
+                x: self.bounds.minX,
+                y: self.bounds.minY,
+                width: self.frame.width,
+                height: self.frame.height - (verticalPadding * 2)
+            ), cornerRadius: 14.0).cgPath
+
+            self.layer.mask = circleMask
     }
 }
 
