@@ -17,21 +17,30 @@ struct Note: Codable {
 
     let id: String = UUID().uuidString
     var online: Bool = false
+    var userShareIcon: URL?
 
     enum CodingKeys: String, CodingKey {
         case title = "header"
         case text
         case date
+        case userShareIcon
     }
 
-    init (title: String, text: String, date: Date, online: Bool = false) {
+    init (title: String, text: String, date: Date, online: Bool = false, userShareIcon: URL? = nil) {
         self.title = title
         self.text = text
         self.date = date
         self.online = online
+        self.userShareIcon = userShareIcon
     }
 
     func getOnlineNote() -> Note {
-        return Note(title: self.title, text: self.text, date: self.date, online: true)
+        return Note(
+            title: self.title,
+            text: self.text,
+            date: self.date,
+            online: true,
+            userShareIcon: self.userShareIcon
+        )
     }
 }

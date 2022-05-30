@@ -11,8 +11,17 @@ class NoteCellView: UITableViewCell {
     private let titleField = UILabel()
     private let textField = UILabel()
     private let dateField = UILabel()
+    private let shareIcon = UIImageView()
+    private let activityIndicator = UIActivityIndicatorView()
 
-    private var model: Note?
+    private var model: Note? {
+        didSet {
+            shareIcon.image = nil
+            if model?.userShareIcon != nil {
+                updateShareIcon()
+            }
+        }
+    }
     var dateFormat = "dd.MM.yyyy"
 
     private let bodyBackgroundColor = UIColor.white
@@ -25,6 +34,8 @@ class NoteCellView: UITableViewCell {
         setupTitleField()
         setupTextField()
         setupDateField()
+        setupShareIcon()
+        setupActivityIndicator()
         setupView()
     }
 
@@ -40,7 +51,8 @@ class NoteCellView: UITableViewCell {
     }
 
     func setupView() {
-            self.backgroundColor = bodyBackgroundColor
+        self.backgroundColor = bodyBackgroundColor
+        self.selectionColor = bodyBackgroundColor
     }
 
     private func setupTitleField() {
@@ -98,6 +110,48 @@ class NoteCellView: UITableViewCell {
         dateField.textColor = UIColor.black
     }
 
+    private func setupShareIcon() {
+        self.contentView.addSubview(shareIcon)
+        shareIcon.translatesAutoresizingMaskIntoConstraints = false
+
+        NSLayoutConstraint.activate([
+            shareIcon.topAnchor.constraint(equalTo: self.contentView.topAnchor, constant: 56.0),
+            shareIcon.bottomAnchor.constraint(equalTo: self.contentView.bottomAnchor, constant: -10.0),
+            shareIcon.trailingAnchor.constraint(equalTo: self.contentView.trailingAnchor, constant: -16.0),
+            shareIcon.widthAnchor.constraint(equalTo: shareIcon.heightAnchor)
+        ])
+    }
+
+    private func setupActivityIndicator() {
+        self.contentView.addSubview(activityIndicator)
+        activityIndicator.translatesAutoresizingMaskIntoConstraints = false
+
+        NSLayoutConstraint.activate([
+            activityIndicator.topAnchor.constraint(equalTo: self.contentView.topAnchor, constant: 56.0),
+            activityIndicator.bottomAnchor.constraint(equalTo: self.contentView.bottomAnchor, constant: -10.0),
+            activityIndicator.trailingAnchor.constraint(equalTo: self.contentView.trailingAnchor, constant: -16.0),
+            activityIndicator.widthAnchor.constraint(equalTo: activityIndicator.heightAnchor)
+        ])
+    }
+
+    private func updateShareIcon() {
+        if let url = self.model?.userShareIcon {
+            activityIndicator.startAnimating()
+
+            DispatchQueue.global(qos: .utility).asyncAfter(deadline: .now() + 10) {
+                let picOfURL = try? Data(contentsOf: url)
+                DispatchQueue.main.async {
+                    if url == self.model?.userShareIcon {
+                        if let picOfURL = picOfURL {
+                            self.shareIcon.image = UIImage(data: picOfURL)
+                        }
+                        self.activityIndicator.stopAnimating()
+                    }
+                }
+            }
+        }
+    }
+
     override func setEditing(_ editing: Bool, animated: Bool) {
         if self.isEditing && self.isEditing == editing {
             self.isEditing = false
@@ -126,5 +180,17 @@ private extension UILabel {
         formatter.dateFormat = format
 
         self.text = formatter.string(from: date)
+    }
+}
+private extension NoteCellView {
+    var selectionColor: UIColor {
+        get {
+            return self.selectedBackgroundView?.backgroundColor ?? UIColor.clear
+        }
+        set {
+            let view = UIView()
+            view.backgroundColor = newValue
+            self.selectedBackgroundView = view
+        }
     }
 }

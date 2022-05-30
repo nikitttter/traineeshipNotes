@@ -67,10 +67,10 @@ class Worker: WorkerType {
 
         urlCoponents.scheme = "https"
         urlCoponents.host = "firebasestorage.googleapis.com"
-        urlCoponents.path = "/v0/b/ios-test-ce687.appspot.com/o/Empty.json"
+        urlCoponents.path = "/v0/b/ios-test-ce687.appspot.com/o/lesson8.json"
         urlCoponents.queryItems = [
             URLQueryItem(name: "alt", value: "media"),
-            URLQueryItem(name: "token", value: "d07f7d4a-141e-4ac5-a2d2-cc936d4e6f18")
+            URLQueryItem(name: "token", value: "215055df-172d-4b98-95a0-b353caca1424")
         ]
 
         return urlCoponents.url
