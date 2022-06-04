@@ -16,11 +16,16 @@ class PlusButton: UIButton {
 
     override init(frame: CGRect) {
         super.init(frame: frame)
+        print("class PlusButton has been initialized")
         setupSetting()
     }
     required init?(coder: NSCoder) {
         super.init(coder: coder)
         setupSetting()
+    }
+
+    deinit {
+        print("class PlusButton has been deallocated")
     }
 
     private func setupSetting() {
@@ -37,7 +42,9 @@ class PlusButton: UIButton {
 
         self.contentVerticalAlignment = .bottom
     }
-
+// на анимации нет ссылок, поэтому в замыкании "animations"
+// следовательно нет риска возникновения цикла сильных ссылок,
+// тогда нет необходимости использовать [weak self]
     private func changeImageAnimated() {
         let nameImage: String = stateButton == .main ? "AddButton" : "RemoveButton"
 
@@ -45,8 +52,8 @@ class PlusButton: UIButton {
             with: self,
             duration: 0.3,
             options: .transitionFlipFromLeft,
-            animations: { [weak self] in
-                self?.setImage(UIImage(named: nameImage), for: .normal)
+            animations: {
+                self.setImage(UIImage(named: nameImage), for: .normal)
             },
             completion: nil
         )
@@ -63,8 +70,8 @@ class PlusButton: UIButton {
             usingSpringWithDamping: 0.6,
             initialSpringVelocity: 0.9,
             options: [],
-            animations: { [weak self] in
-                self?.frame.origin.y = initialButtonY
+            animations: {
+                self.frame.origin.y = initialButtonY
             },
             completion: nil
         )
@@ -81,21 +88,21 @@ class PlusButton: UIButton {
                 UIView.addKeyframe(
                     withRelativeStartTime: 0,
                     relativeDuration: 0.6,
-                    animations: { [weak self] in
-                        self?.frame.origin.y = initialButtonY - 20
+                    animations: {
+                        self.frame.origin.y = initialButtonY - 20
                     }
                 )
                 UIView.addKeyframe(
                     withRelativeStartTime: 0.6,
                     relativeDuration: 0.4,
-                    animations: { [weak self] in
-                        self?.frame.origin.y = UIScreen.main.bounds.maxY
+                    animations: {
+                        self.frame.origin.y = UIScreen.main.bounds.maxY
                     }
                 )
             },
-            completion: { [weak self] _ in
-                self?.isHidden = true
-                self?.frame.origin.y = initialButtonY
+            completion: { _ in
+                self.isHidden = true
+                self.frame.origin.y = initialButtonY
                 completion?()
             }
         )

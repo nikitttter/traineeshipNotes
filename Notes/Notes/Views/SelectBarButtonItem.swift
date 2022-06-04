@@ -25,7 +25,12 @@ class SelectBarButtonItem: UIBarButtonItem {
     }
     override init() {
         super.init()
+        print("class SelectBarButtonItem has been initialized")
         self.title = getNextStateText()
+    }
+
+    deinit {
+        print("class SelectBarButtonItem has been deallocated")
     }
 
     required init?(coder: NSCoder) {

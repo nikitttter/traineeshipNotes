@@ -20,6 +20,19 @@ class ListViewController: UIViewController {
 
     private let backgroudColor = UIColor(red: 0.898, green: 0.898, blue: 0.898, alpha: 1)
 
+    override init(nibName nibNameOrNil: String?, bundle nibBundleOrNil: Bundle?) {
+        super.init(nibName: nibNameOrNil, bundle: nibBundleOrNil)
+        print("class ListViewController has been initialized")
+    }
+
+    deinit {
+        print("class ListViewController has been deallocated")
+    }
+
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+
     override func viewDidLoad() {
         super.viewDidLoad()
         worker.delegate = self
@@ -91,6 +104,8 @@ class ListViewController: UIViewController {
     @objc private func plusButtonTapped() {
         switch plusButton.stateButton {
         case .main:
+//            необходим weak, чотюы не создавать цикл сильных ссылок,
+//            так как на plusButton есть сильная ссылка в данном классе
             plusButton.hideButtonAnimated { [weak self] in
                 self?.routeToNoteViewController(model: nil)
             }
@@ -187,7 +202,7 @@ extension ListViewController: UITableViewDataSource {
         trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath
     ) -> UISwipeActionsConfiguration? {
         let labelText = NSLocalizedString("labelDelete", comment: "")
-
+//      weak нужен, так как в классе есть ссылка на tableView, и есть риск возникновения цикла сильных ссылок
         let deleteAction = UIContextualAction(style: .normal, title: labelText) { [weak self] _, _, complete in
             self?.tableView(tableView, commit: .delete, forRowAt: indexPath)
             complete(true)
