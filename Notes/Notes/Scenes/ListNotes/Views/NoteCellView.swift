@@ -14,7 +14,7 @@ class NoteCellView: UITableViewCell {
     private let shareIcon = UIImageView()
     private let activityIndicator = UIActivityIndicatorView()
 
-    private var model: Note? {
+    private var model: ListNotes.PreviewNote? {
         didSet {
             shareIcon.image = nil
             if model?.userShareIcon != nil {
@@ -22,7 +22,6 @@ class NoteCellView: UITableViewCell {
             }
         }
     }
-    var dateFormat = "dd.MM.yyyy"
 
     private let bodyBackgroundColor = UIColor.white
     private var circleMask = CAShapeLayer()
@@ -43,11 +42,11 @@ class NoteCellView: UITableViewCell {
         fatalError("init(coder:) has not been implemented")
     }
 
-    func setData(_ note: Note) {
+    func setData(_ note: ListNotes.PreviewNote) {
         model = note
         titleField.text = note.title
         textField.text = note.text
-        dateField.setText(date: note.date, format: dateFormat)
+        dateField.text = note.date
     }
 
     func setupView() {
@@ -174,14 +173,6 @@ class NoteCellView: UITableViewCell {
     }
 }
 
-private extension UILabel {
-    func setText(date: Date, format: String) {
-        let formatter = DateFormatter()
-        formatter.dateFormat = format
-
-        self.text = formatter.string(from: date)
-    }
-}
 private extension NoteCellView {
     var selectionColor: UIColor {
         get {

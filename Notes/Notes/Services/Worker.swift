@@ -8,12 +8,7 @@
 import Foundation
 
 protocol WorkerType {
-    var delegate: WorkerDelegate? { get set }
-    func fetchData()
-}
-
-protocol WorkerDelegate: AnyObject {
-    func updateInterface(notes: [Note])
+    func fetchData(_ completion: @escaping (_ fetchedNotes: [Note]) -> Void)
 }
 
 enum NetworkError: Error {
@@ -22,14 +17,12 @@ enum NetworkError: Error {
 
 class Worker: WorkerType {
     private lazy var session: URLSession = {
-       return  URLSession(configuration: .default)
+        return  URLSession(configuration: .default)
     }()
 
-    weak var delegate: WorkerDelegate?
-
-    func fetchData() {
+    func fetchData(_ completion: @escaping (_ fetchedNotes: [Note]) -> Void) {
         do {
-            let task = session.dataTask(with: try createURLRequest()) { [weak self] data, _, error in
+            let task = session.dataTask(with: try createURLRequest()) { data, _, error in
                 if let error = error {
                     print(error)
                     return
@@ -38,9 +31,9 @@ class Worker: WorkerType {
                 if let data = data {
                     do {
                         let fetchedNotes = try JSONDecoder().decode([Note].self, from: data)
-
+                        let onlineNotes = fetchedNotes.map({ $0.getOnlineNote() })
                         DispatchQueue.main.async {
-                            self?.delegate?.updateInterface(notes: fetchedNotes)
+                            completion(onlineNotes)
                         }
                     } catch let error as NSError {
                         print(error.localizedDescription)
