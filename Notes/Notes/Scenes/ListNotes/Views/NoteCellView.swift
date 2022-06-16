@@ -29,13 +29,18 @@ class NoteCellView: UITableViewCell {
 
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
-
         setupTitleField()
         setupTextField()
         setupDateField()
         setupShareIcon()
         setupActivityIndicator()
         setupView()
+
+        print("class NoteCellView has been initialized")
+    }
+
+    deinit {
+        print("class NoteCellView has been deallocated")
     }
 
     required init?(coder: NSCoder) {

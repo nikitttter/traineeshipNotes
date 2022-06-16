@@ -11,8 +11,12 @@ class NoteArrayDataProvider {
     private let noteArrayKey = "notesArray"
     private static  let dateFormat = "dd.MM.yyyy EEEE HH:mm"
     private let dateFormatter = DateFormatter()
-    private init() { }
-
+    private init() {
+        print("class NoteArrayDataProvider has been initialized")
+    }
+    deinit {
+        print("class NoteArrayDataProvider has been deallocated")
+    }
     static private var instance: NoteArrayDataProvider?
 
     static func getInstance() -> NoteArrayDataProvider {

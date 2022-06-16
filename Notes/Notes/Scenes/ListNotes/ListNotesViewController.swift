@@ -40,10 +40,15 @@ class ListNotesViewController: UIViewController {
         self.interactor = interactor
         self.router = router
         super.init(nibName: nil, bundle: nil)
+        print("class ListViewController has been initialized")
     }
 
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
+    }
+
+    deinit {
+        print("class ListViewController has been deallocated")
     }
 
     // MARK: View lifecycle
@@ -136,6 +141,8 @@ class ListNotesViewController: UIViewController {
     @objc private func plusButtonTapped() {
         switch plusButton.stateButton {
         case .main:
+//            необходим weak, чтобы не создавать цикл сильных ссылок,
+//            так как на plusButton есть сильная ссылка в данном классе
             plusButton.hideButtonAnimated { [weak self] in
                 self?.routeToNoteViewController(id: nil)
             }
@@ -222,7 +229,7 @@ extension ListNotesViewController: UITableViewDataSource {
         trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath
     ) -> UISwipeActionsConfiguration? {
         let labelText = NSLocalizedString("labelDelete", comment: "")
-
+//      weak нужен, так как в классе есть ссылка на tableView, и есть риск возникновения цикла сильных ссылок
         let deleteAction = UIContextualAction(style: .normal, title: labelText) { [weak self] _, _, complete in
             self?.tableView(tableView, commit: .delete, forRowAt: indexPath)
             complete(true)

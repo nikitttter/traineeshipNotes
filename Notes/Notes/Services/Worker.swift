@@ -16,6 +16,13 @@ enum NetworkError: Error {
 }
 
 class Worker: WorkerType {
+    init () {
+        print("class Worker has been initialized")
+    }
+
+    deinit {
+        print("class Worker has been deallocated")
+    }
     private lazy var session: URLSession = {
         return  URLSession(configuration: .default)
     }()

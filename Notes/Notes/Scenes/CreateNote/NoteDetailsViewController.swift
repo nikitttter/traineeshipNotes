@@ -35,10 +35,15 @@ class NoteDetailsViewController: UIViewController {
         self.router = router
 
         super.init(nibName: nil, bundle: nil)
+        print("class NoteViewController has been initialized")
     }
 
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
+    }
+
+    deinit {
+        print("class NoteViewController has been deallocated")
     }
 
     // MARK: ViewController lifecycle
