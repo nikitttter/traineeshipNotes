@@ -16,16 +16,16 @@ enum NetworkError: Error {
 }
 
 class Worker: WorkerType {
-    init () {
+    var session: URLSession
+
+    init (session: URLSession = URLSession(configuration: .default)) {
+        self.session = session
         print("class Worker has been initialized")
     }
 
     deinit {
         print("class Worker has been deallocated")
     }
-    private lazy var session: URLSession = {
-        return  URLSession(configuration: .default)
-    }()
 
     func fetchData(_ completion: @escaping (_ fetchedNotes: [Note]) -> Void) {
         do {

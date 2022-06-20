@@ -10,7 +10,6 @@ import Foundation
 protocol NotePresentationLogic {
     func presentNoteDetails(response: NoteDetails.ShowNoteDetails.Response)
     func showAlert(response: NoteDetails.UpdateNoteModel.Response)
-    func disappearView()
 }
 
 class NotePresenter {
@@ -41,9 +40,5 @@ extension NotePresenter: NotePresentationLogic {
         let message = NSLocalizedString(response.error.rawValue, comment: "")
         let viewModel = NoteDetails.UpdateNoteModel.ViewModel(message: message)
         viewController?.showAlert(viewModel: viewModel)
-    }
-
-    func disappearView() {
-        viewController?.routeToNotesList()
     }
 }

@@ -18,7 +18,9 @@ enum ListNotes {
     // MARK: Use cases
 
     enum FetchNotes {
-        struct Request {}
+        struct Request {
+            var getFromStorage: Bool
+        }
 
         struct Response {
             var notes: [NoteDispalyed]
@@ -29,7 +31,7 @@ enum ListNotes {
         }
     }
 
-    enum UpdatedNotes {
+    enum DeleteNotes {
         struct Request {
             var id: Int
         }
