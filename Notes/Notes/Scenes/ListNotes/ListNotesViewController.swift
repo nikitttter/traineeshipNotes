@@ -9,7 +9,7 @@ import UIKit
 
 protocol ListNotesDisplayLogic: AnyObject {
     func displayData(_ viewModel: ListNotes.FetchNotes.ViewModel)
-    func updateData(_ viewModel: ListNotes.DeleteNotes.ViewModel)
+    func updateKeepData(_ viewModel: ListNotes.DeleteNotes.ViewModel)
     func showAlert(_ viewModel: ListNotes.AlertErrors.ViewModel)
 }
 
@@ -267,7 +267,7 @@ extension ListNotesViewController: ListNotesDisplayLogic {
         tableView.reloadData()
     }
 
-    func updateData(_ viewModel: ListNotes.DeleteNotes.ViewModel) {
+    func updateKeepData(_ viewModel: ListNotes.DeleteNotes.ViewModel) {
         displayedNotes = viewModel.updatedNotes
     }
 

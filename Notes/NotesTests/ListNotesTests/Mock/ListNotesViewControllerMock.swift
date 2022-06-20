@@ -17,7 +17,7 @@ final class ListNotesViewControllerMock: ListNotesDisplayLogic {
         displayDataWasCalled = true
     }
 
-    func updateData(_ viewModel: ListNotes.DeleteNotes.ViewModel) {
+    func updateKeepData(_ viewModel: ListNotes.DeleteNotes.ViewModel) {
         updateDataWasCalled = true
     }
 

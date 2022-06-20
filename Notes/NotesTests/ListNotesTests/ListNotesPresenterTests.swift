@@ -48,7 +48,7 @@ final class ListNotesPresenterTests: XCTestCase {
             Note(title: "testTitle", text: "testBody", date: .now)
         ])
 
-        sut.updateNotes(response: response)
+        sut.deleteNotes(response: response)
         XCTAssertTrue(
             viewController.updateDataWasCalled,
             "Presenter must call viewController's method updateData"

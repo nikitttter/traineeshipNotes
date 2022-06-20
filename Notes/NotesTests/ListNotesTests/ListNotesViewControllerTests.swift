@@ -55,7 +55,7 @@ class ListNotesViewControllerTests: XCTestCase {
             ListNotes.PreviewNote(title: "testTitle", text: "testBody", date: "2022")
         ])
 
-        sut.updateData(viewModel)
+        sut.updateKeepData(viewModel)
 
         XCTAssertFalse(tableView.reloadDataWasCalled, "ViewController must call tableView's method reloadData")
         XCTAssertEqual(

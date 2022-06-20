@@ -9,7 +9,7 @@ import Foundation
 
 protocol ListNotesPresentationLogic {
     func presentNotes(response: ListNotes.FetchNotes.Response)
-    func updateNotes(response: ListNotes.DeleteNotes.Response)
+    func deleteNotes(response: ListNotes.DeleteNotes.Response)
     func alertNoSelectedNote(response: ListNotes.AlertErrors.Response)
 }
 
@@ -39,7 +39,7 @@ extension ListNotesPresenter: ListNotesPresentationLogic {
         viewController?.displayData(viewModel)
     }
 
-    func updateNotes(response: ListNotes.DeleteNotes.Response) {
+    func deleteNotes(response: ListNotes.DeleteNotes.Response) {
         let updatedNotes = response.notes.map {
             return ListNotes.PreviewNote(
                 title: $0.title,
@@ -49,7 +49,7 @@ extension ListNotesPresenter: ListNotesPresentationLogic {
             )
         }
         let viewModel = ListNotes.DeleteNotes.ViewModel(updatedNotes: updatedNotes)
-        viewController?.updateData(viewModel)
+        viewController?.updateKeepData(viewModel)
     }
 
     func alertNoSelectedNote(response: ListNotes.AlertErrors.Response) {

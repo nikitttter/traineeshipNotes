@@ -21,7 +21,7 @@ final class ListNotesPresenterMock: ListNotesPresentationLogic {
         presentNotesWasCalled = true
     }
 
-    func updateNotes(response: ListNotes.DeleteNotes.Response) {
+    func deleteNotes(response: ListNotes.DeleteNotes.Response) {
         updateNotesWasCalled = true
     }
 

@@ -64,7 +64,7 @@ extension ListNotesInteractor: ListNotesBusinesLogic {
         if let index = index, index.id >= 0, notes.count > index.id {
             notes.remove(at: index.id)
             let response = ListNotes.DeleteNotes.Response(notes: notes)
-            presenter.updateNotes(response: response)
+            presenter.deleteNotes(response: response)
         } else {
             let response = ListNotes.AlertErrors.Response(error: .notSelectedNotes)
             presenter.alertNoSelectedNote(response: response)
