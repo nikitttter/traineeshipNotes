@@ -16,17 +16,21 @@ class ListViewController: UIViewController {
 
     private let tableView = UITableView()
 
+    private var worker: WorkerType = Worker()
+
     private let backgroudColor = UIColor(red: 0.898, green: 0.898, blue: 0.898, alpha: 1)
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        worker.delegate = self
+
         arrayNotes = NoteArrayDataProvider.getInstance().getSavedNotes() ?? [Note]()
+        worker.fetchData()
 
         tableView.register(NoteCellView.self, forCellReuseIdentifier: cellIdentifier)
         tableView.dataSource = self
         tableView.delegate = self
         tableView.allowsMultipleSelectionDuringEditing = true
-
         setupTableView()
         setupPlusButton()
         setupRightBarButton()
@@ -201,5 +205,13 @@ extension ListViewController: UITableViewDelegate {
         if !tableView.isEditing {
             self.routeToNoteViewController(model: arrayNotes[indexPath.row])
         }
+    }
+}
+extension ListViewController: WorkerDelegate {
+    func updateInterface(notes: [Note]) {
+        arrayNotes.append(contentsOf: notes.compactMap {
+            return $0.getOnlineNote()
+        })
+        self.tableView.reloadData()
     }
 }

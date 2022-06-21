@@ -20,6 +20,7 @@
 		11DACDFB27F0AF1100623F11 /* NoteViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11DACDFA27F0AF1100623F11 /* NoteViewController.swift */; };
 		11DACE0027F0AF1300623F11 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 11DACDFF27F0AF1300623F11 /* Assets.xcassets */; };
 		11DACE0327F0AF1300623F11 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 11DACE0127F0AF1300623F11 /* LaunchScreen.storyboard */; };
+		11E7A2E82835931100F58FA9 /* Worker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11E7A2E72835931100F58FA9 /* Worker.swift */; };
 		11EB6AE427F79DCF00EE4E6D /* Note.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11EB6AE327F79DCF00EE4E6D /* Note.swift */; };
 /* End PBXBuildFile section */
 
@@ -40,6 +41,7 @@
 		11DACDFF27F0AF1300623F11 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		11DACE0227F0AF1300623F11 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		11DACE0427F0AF1300623F11 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		11E7A2E72835931100F58FA9 /* Worker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Worker.swift; sourceTree = "<group>"; };
 		11EB6AE327F79DCF00EE4E6D /* Note.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Note.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -59,6 +61,7 @@
 			children = (
 				119E76022804501B002A780A /* NoteArrayDataProvider.swift */,
 				1189EADE2832BE7400D8EDB8 /* AlertManager.swift */,
+				11E7A2E72835931100F58FA9 /* Worker.swift */,
 			);
 			path = Services;
 			sourceTree = "<group>";
@@ -217,6 +220,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				11E7A2E82835931100F58FA9 /* Worker.swift in Sources */,
 				11DACDFB27F0AF1100623F11 /* NoteViewController.swift in Sources */,
 				1189EADF2832BE7400D8EDB8 /* AlertManager.swift in Sources */,
 				118B1E1A2802367D005D731C /* PlusButton.swift in Sources */,
