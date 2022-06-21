@@ -8,12 +8,7 @@
 import Foundation
 
 protocol WorkerType {
-    var delegate: WorkerDelegate? { get set }
-    func fetchData()
-}
-
-protocol WorkerDelegate: AnyObject {
-    func updateInterface(notes: [Note])
+    func fetchData(_ completion: @escaping (_ fetchedNotes: [Note]) -> Void)
 }
 
 enum NetworkError: Error {
@@ -29,13 +24,10 @@ class Worker: WorkerType {
         print("class Worker has been deallocated")
     }
     private lazy var session: URLSession = {
-       return  URLSession(configuration: .default)
+        return  URLSession(configuration: .default)
     }()
 
-    // weak здесь необходим так как в ListViewController есть сильная ссылка на на данный класс
-    weak var delegate: WorkerDelegate?
-
-    func fetchData() {
+    func fetchData(_ completion: @escaping (_ fetchedNotes: [Note]) -> Void) {
         do {
             let task = session.dataTask(with: try createURLRequest()) { data, _, error in
                 if let error = error {
@@ -46,9 +38,9 @@ class Worker: WorkerType {
                 if let data = data {
                     do {
                         let fetchedNotes = try JSONDecoder().decode([Note].self, from: data)
-
+                        let onlineNotes = fetchedNotes.map({ $0.getOnlineNote() })
                         DispatchQueue.main.async {
-                            self.delegate?.updateInterface(notes: fetchedNotes)
+                            completion(onlineNotes)
                         }
                     } catch let error as NSError {
                         print(error.localizedDescription)

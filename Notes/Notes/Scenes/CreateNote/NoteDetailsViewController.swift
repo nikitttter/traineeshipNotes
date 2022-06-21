@@ -8,23 +8,33 @@
 import UIKit
 import Foundation
 
-class NoteViewController: UIViewController {
+protocol NoteDisplayLogic: AnyObject {
+    func displayNoteDetails(viewModel: NoteDetails.ShowNoteDetails.ViewModel)
+    func showAlert(viewModel: NoteDetails.UpdateNoteModel.ViewModel)
+    func routeToNotesList()
+}
+
+class NoteDetailsViewController: UIViewController {
+    // MARK: UI vars
+
     private let titleTextField = UITextField()
     private let doneButton = UIBarButtonItem()
     private let noteTextField = UITextView()
     private let headerContainer = UIView()
     private let dateField = UITextField()
-    private var currentDate = Date.now
 
-    private let dateFormatted = DateFormatter()
-    private var isNewNote: Bool!
-    var data: Note?
-    //  можно не использовать weak, так как в ListViewController нет ссылки на данный класс
-    //  и следовательно не возникает проблемы цикла сильных ссылок
-    var delegate: ListViewController?
+    // MARK: Interactor, router
 
-    override init(nibName nibNameOrNil: String?, bundle nibBundleOrNil: Bundle?) {
-        super.init(nibName: nibNameOrNil, bundle: nibBundleOrNil)
+    private let interactor: NoteBusinesLogic
+    let router: NoteRoutingLogic & NoteDataPassing
+
+    // MARK: Object lifecycle
+
+    init(interactor: NoteBusinesLogic, router: NoteRoutingLogic & NoteDataPassing) {
+        self.interactor = interactor
+        self.router = router
+
+        super.init(nibName: nil, bundle: nil)
         print("class NoteViewController has been initialized")
     }
 
@@ -36,20 +46,41 @@ class NoteViewController: UIViewController {
         print("class NoteViewController has been deallocated")
     }
 
+    // MARK: ViewController lifecycle
+
     override func viewDidLoad() {
         super.viewDidLoad()
         self.view.backgroundColor = UIColor(red: 0.898, green: 0.898, blue: 0.898, alpha: 1)
-        dateFormatted.dateFormat = "dd.MM.yyyy EEEE HH:mm"
         setupDoneButton()
         setupHeaderContainer()
         setupNoteField()
-
-        isNewNote = data != nil ? false : true
-
-        titleTextField.text = data?.title
-        noteTextField.text = data?.text
-        dateField.text = dateFormatted.string(from: currentDate)
+        getNoteDetail()
      }
+
+    override func viewDidAppear(_ animated: Bool) {
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(keyboardWasShowen),
+            name: UIResponder.keyboardWillShowNotification,
+            object: nil
+        )
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(keyboardWasHidden),
+            name: UIResponder.keyboardWillHideNotification,
+            object: nil
+        )
+        noteTextField.becomeFirstResponder()
+    }
+
+    override func viewWillDisappear(_ animated: Bool) {
+        NotificationCenter.default.removeObserver(self, name: UIResponder.keyboardWillShowNotification, object: nil)
+        NotificationCenter.default.removeObserver(self, name: UIResponder.keyboardWillHideNotification, object: nil)
+
+        saveNote()
+    }
+
+    // MARK: setup views
 
     private func setupHeaderContainer() {
         view.addSubview(headerContainer)
@@ -130,68 +161,22 @@ class NoteViewController: UIViewController {
         dateField.delegate = self
     }
 
-    override func viewDidAppear(_ animated: Bool) {
-        NotificationCenter.default.addObserver(
-            self,
-            selector: #selector(keyboardWasShowen),
-            name: UIResponder.keyboardWillShowNotification,
-            object: nil
-        )
-        NotificationCenter.default.addObserver(
-            self,
-            selector: #selector(keyboardWasHidden),
-            name: UIResponder.keyboardWillHideNotification,
-            object: nil
-        )
-        noteTextField.becomeFirstResponder()
+    // MARK: User action handlers
+
+    @objc private func doneButtonTapped(_ sender: Any) {
+        updateNoteDetail()
+        hideKeyboard()
     }
 
-    override func viewWillDisappear(_ animated: Bool) {
-        NotificationCenter.default.removeObserver(self, name: UIResponder.keyboardWillShowNotification, object: nil)
-        NotificationCenter.default.removeObserver(self, name: UIResponder.keyboardWillHideNotification, object: nil)
-
-        saveModel()
-
-        guard let note = data else {
-            return
-        }
-
-        if isNewNote && !note.isEmpty {
-            delegate?.newNote(note: note)
-        } else if !isNewNote {
-            delegate?.updateNote(note: note)
-        }
-    }
+    // MARK: Work with keyboard
 
     private func hideKeyboard() {
         titleTextField.resignFirstResponder()
         noteTextField.resignFirstResponder()
     }
 
-    private func saveModel() {
-        if data == nil {
-            data = Note(title: titleTextField.text ?? String(), text: noteTextField.text, date: currentDate)
-        } else {
-            data?.title = titleTextField.text ?? String()
-            data?.text = noteTextField.text
-            data?.date = currentDate
-        }
-    }
-
-    @objc private func doneButtonTapped(_ sender: Any) {
-        saveModel()
-
-        guard !self.isNoteEmpty() else {
-            AlertManager.showErrorAlert(from: self, text: NSLocalizedString("emptyNote", comment: ""))
-            return
-        }
-
-        hideKeyboard()
-    }
-
     @objc private func keyboardWasShowen(_ notification: Notification) {
         navigationItem.rightBarButtonItem = doneButton
-        currentDate = Date.now
 
         guard let info = notification.userInfo as NSDictionary? else {
             return
@@ -209,15 +194,33 @@ class NoteViewController: UIViewController {
         navigationItem.rightBarButtonItem = nil
         noteTextField.contentInset = UIEdgeInsets.zero
     }
-}
 
-extension NoteViewController {
-    func isNoteEmpty() -> Bool {
-        return data?.isEmpty ?? true
+    // MARK: Actions
+
+    private func getNoteDetail() {
+        interactor.provideNoteDetail()
+    }
+
+    private func updateNoteDetail() {
+        let request = NoteDetails.UpdateNoteModel.Request(
+            noteHeader: titleTextField.text,
+            noteText: noteTextField.text
+        )
+        interactor.updateNoteDetail(request: request)
+    }
+
+    private func saveNote() {
+        let request = NoteDetails.SaveNoteModel.Request(
+            noteHeader: titleTextField.text,
+            noteText: noteTextField.text
+        )
+        interactor.saveNotes(request: request)
     }
 }
 
-extension NoteViewController: UITextFieldDelegate {
+// MARK: UITextFieldDelegate
+
+extension NoteDetailsViewController: UITextFieldDelegate {
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
         if textField == titleTextField {
             noteTextField.becomeFirstResponder()
@@ -227,5 +230,23 @@ extension NoteViewController: UITextFieldDelegate {
             )
         }
         return true
+    }
+}
+
+// MARK: NoteDisplayLogic
+
+extension NoteDetailsViewController: NoteDisplayLogic {
+    func displayNoteDetails(viewModel: NoteDetails.ShowNoteDetails.ViewModel) {
+        titleTextField.text = viewModel.noteHeader
+        noteTextField.text = viewModel.noteText
+        dateField.text = viewModel.noteDate
+    }
+
+    func showAlert(viewModel: NoteDetails.UpdateNoteModel.ViewModel) {
+        AlertManager.showErrorAlert(from: self, text: viewModel.message)
+    }
+
+    func routeToNotesList() {
+        router.routeToNotesList()
     }
 }
