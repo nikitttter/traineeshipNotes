@@ -15,7 +15,7 @@ struct Note: Codable {
         return title.isEmpty && text.isEmpty
     }
 
-    let id: String = UUID().uuidString
+    var id: String = UUID().uuidString
     var online: Bool = false
     var userShareIcon: URL?
 
@@ -42,5 +42,9 @@ struct Note: Codable {
             online: true,
             userShareIcon: self.userShareIcon
         )
+    }
+
+    mutating func setId(_ id: String) {
+        self.id = id
     }
 }

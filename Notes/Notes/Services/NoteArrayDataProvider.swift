@@ -9,7 +9,7 @@ import Foundation
 
 class NoteArrayDataProvider {
     private let noteArrayKey = "notesArray"
-    private static  let dateFormat = "dd-MM-yyyy"
+    private static  let dateFormat = "dd.MM.yyyy EEEE HH:mm"
     private let dateFormatter = DateFormatter()
     private init() {
         print("class NoteArrayDataProvider has been initialized")

@@ -1,5 +1,5 @@
 //
-//  ListViewController.swift
+//  ListNotesViewController.swift
 //  Notes
 //
 //  Created by Nikita Yakovlev on 09.04.2022.
@@ -7,52 +7,68 @@
 
 import UIKit
 
-class ListViewController: UIViewController {
+protocol ListNotesDisplayLogic: AnyObject {
+    func displayData(_ viewModel: ListNotes.FetchNotes.ViewModel)
+    func updateData(_ viewModel: ListNotes.UpdatedNotes.ViewModel)
+    func showAlert(_ viewModel: ListNotes.AlertErrors.ViewModel)
+}
+
+class ListNotesViewController: UIViewController {
+    // MARK: UI vars
+
     private let plusButton = PlusButton()
     private let rightBarButton = SelectBarButtonItem()
-
-    var arrayNotes = [Note]()
-    private let cellIdentifier = "cellNote"
-
     private let tableView = UITableView()
 
-    private var worker: WorkerType = Worker()
+    // MARK: configure vars
 
     private let backgroudColor = UIColor(red: 0.898, green: 0.898, blue: 0.898, alpha: 1)
+    private let cellIdentifier = "cellNote"
 
-    override init(nibName nibNameOrNil: String?, bundle nibBundleOrNil: Bundle?) {
-        super.init(nibName: nibNameOrNil, bundle: nibBundleOrNil)
+    // MARK: displayedNotes
+
+    private var displayedNotes: [ListNotes.PreviewNote] = []
+
+    // MARK: Interactor, router
+
+    private let interactor: ListNotesBusinesLogic
+    let router: (ListNotesRoutingLogic & ListNotesDataPassing)
+
+    // MARK: object lifecycle
+
+    init(interactor: ListNotesBusinesLogic, router: ListNotesRoutingLogic & ListNotesDataPassing) {
+        self.interactor = interactor
+        self.router = router
+        super.init(nibName: nil, bundle: nil)
         print("class ListViewController has been initialized")
-    }
-
-    deinit {
-        print("class ListViewController has been deallocated")
     }
 
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
 
+    deinit {
+        print("class ListViewController has been deallocated")
+    }
+
+    // MARK: View lifecycle
+
     override func viewDidLoad() {
         super.viewDidLoad()
-        worker.delegate = self
-
-        arrayNotes = NoteArrayDataProvider.getInstance().getSavedNotes() ?? [Note]()
-        worker.fetchData()
-
-        tableView.register(NoteCellView.self, forCellReuseIdentifier: cellIdentifier)
-        tableView.dataSource = self
-        tableView.delegate = self
-        tableView.allowsMultipleSelectionDuringEditing = true
-        setupTableView()
-        setupPlusButton()
-        setupRightBarButton()
         setupView()
+
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(saveNotes),
+            name: UIApplication.willResignActiveNotification,
+            object: nil
+        )
     }
 
     override func viewWillAppear(_ animated: Bool) {
         self.navigationItem.title = NSLocalizedString("listNotes", comment: "")
         plusButton.isHidden = true
+        fetchNotes()
     }
 
     override func viewDidAppear(_ animated: Bool) {
@@ -65,8 +81,20 @@ class ListViewController: UIViewController {
         tableView.setEditing(false, animated: false)
     }
 
+    override func viewDidLayoutSubviews() {
+        plusButton.clipsToBounds = true
+        plusButton.layer.cornerRadius = plusButton.frame.width / 2
+        plusButton.layoutIfNeeded()
+    }
+
+    // MARK: Setup views
+
     private func setupView() {
         self.view.backgroundColor = backgroudColor
+
+        setupTableView()
+        setupPlusButton()
+        setupRightBarButton()
     }
 
     private func setupPlusButton() {
@@ -80,8 +108,9 @@ class ListViewController: UIViewController {
         plusButton.addTarget(self, action: #selector(plusButtonTapped), for: .touchUpInside)
     }
 
-    func setupTableView() {
+    private func setupTableView() {
         view.addSubview(tableView)
+
         tableView.translatesAutoresizingMaskIntoConstraints = false
 
         NSLayoutConstraint.activate([
@@ -91,6 +120,12 @@ class ListViewController: UIViewController {
             tableView.bottomAnchor.constraint(equalTo: view.bottomAnchor)
         ])
 
+        tableView.register(NoteCellView.self, forCellReuseIdentifier: cellIdentifier)
+
+        tableView.dataSource = self
+        tableView.delegate = self
+
+        tableView.allowsMultipleSelectionDuringEditing = true
         tableView.backgroundColor = backgroudColor
         tableView.separatorStyle = .none
     }
@@ -101,13 +136,15 @@ class ListViewController: UIViewController {
         navigationItem.rightBarButtonItem = rightBarButton
     }
 
+    // MARK: User action handlers
+
     @objc private func plusButtonTapped() {
         switch plusButton.stateButton {
         case .main:
-//            необходим weak, чотюы не создавать цикл сильных ссылок,
+//            необходим weak, чтобы не создавать цикл сильных ссылок,
 //            так как на plusButton есть сильная ссылка в данном классе
             plusButton.hideButtonAnimated { [weak self] in
-                self?.routeToNoteViewController(model: nil)
+                self?.routeToNoteViewController(id: nil)
             }
         case .additional:
             if tableView.indexPathsForSelectedRows != nil {
@@ -117,42 +154,10 @@ class ListViewController: UIViewController {
                     }
                 } while tableView.indexPathsForSelectedRows != nil
                 rightBarButtonTapped()
-            } else {
-                AlertManager.showErrorAlert(from: self, text: NSLocalizedString("notSelectedNotes", comment: ""))
+             } else {
+                 interactor.deleteNotes(by: nil)
             }
         }
-    }
-
-    private func routeToNoteViewController(model: Note?) {
-        let destination = NoteViewController()
-        if let model = model {
-            destination.data = model
-        }
-        destination.delegate = self
-        self.navigationItem.title = ""
-        self.navigationController?.pushViewController(destination, animated: true)
-    }
-
-    override func viewDidLayoutSubviews() {
-        plusButton.clipsToBounds = true
-        plusButton.layer.cornerRadius = plusButton.frame.width / 2
-        plusButton.layoutIfNeeded()
-    }
-
-    func updateNote(note: Note) {
-        if let index = arrayNotes.firstIndex(where: { $0.id == note.id }) {
-            if note.isEmpty {
-                arrayNotes.remove(at: index)
-            } else {
-                arrayNotes[index] = note
-            }
-        }
-        tableView.reloadData()
-    }
-
-    func newNote(note: Note) {
-        arrayNotes.append(note)
-        tableView.reloadData()
     }
 
     @objc private func rightBarButtonTapped() {
@@ -165,14 +170,35 @@ class ListViewController: UIViewController {
             tableView.setEditing(!tableView.isEditing, animated: true)
         }
     }
+
+    // MARK: Actions
+
+    private func fetchNotes() {
+        interactor.fetchNotes()
+    }
+
+    private func deleteNotes(ids: ListNotes.UpdatedNotes.Request) {
+        interactor.deleteNotes(by: ids)
+    }
+
+    private func routeToNoteViewController(id: Int?) {
+        router.routeToNoteDetailsForEditing(at: id)
+    }
+
+    @objc func saveNotes() {
+        interactor.saveNotes()
+    }
 }
-extension ListViewController: UITableViewDataSource {
+
+// MARK: UITableViewDataSource
+
+extension ListNotesViewController: UITableViewDataSource {
     func numberOfSections(in tableView: UITableView) -> Int {
         1
     }
 
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return arrayNotes.count
+        return displayedNotes.count
     }
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -182,7 +208,7 @@ extension ListViewController: UITableViewDataSource {
             return cell
         }
 
-        customCell.setData(arrayNotes[indexPath.row])
+        customCell.setData(displayedNotes[indexPath.row])
         return customCell
     }
 
@@ -192,7 +218,8 @@ extension ListViewController: UITableViewDataSource {
         forRowAt indexPath: IndexPath
     ) {
         if editingStyle == .delete {
-            arrayNotes.remove(at: indexPath.row)
+            let request = ListNotes.UpdatedNotes.Request(id: indexPath.row)
+            deleteNotes(ids: request)
             tableView.deleteRows(at: [indexPath], with: .left)
         }
     }
@@ -215,18 +242,30 @@ extension ListViewController: UITableViewDataSource {
         return config
     }
 }
-extension ListViewController: UITableViewDelegate {
+
+// MARK: UITableViewDelegate
+
+extension ListNotesViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         if !tableView.isEditing {
-            self.routeToNoteViewController(model: arrayNotes[indexPath.row])
+            self.routeToNoteViewController(id: indexPath.row)
         }
     }
 }
-extension ListViewController: WorkerDelegate {
-    func updateInterface(notes: [Note]) {
-        arrayNotes.append(contentsOf: notes.compactMap {
-            return $0.getOnlineNote()
-        })
-        self.tableView.reloadData()
+
+// MARK: ListNotesDisplayLogic
+
+extension ListNotesViewController: ListNotesDisplayLogic {
+    func displayData(_ viewModel: ListNotes.FetchNotes.ViewModel) {
+        displayedNotes = viewModel.displayedNotes
+        tableView.reloadData()
+    }
+
+    func updateData(_ viewModel: ListNotes.UpdatedNotes.ViewModel) {
+        displayedNotes = viewModel.updatedNotes
+    }
+
+    func showAlert(_ viewModel: ListNotes.AlertErrors.ViewModel) {
+        AlertManager.showErrorAlert(from: self, text: viewModel.message)
     }
 }
