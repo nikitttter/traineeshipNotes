@@ -29,7 +29,9 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     func sceneWillResignActive(_ scene: UIScene) {
         if let navigationController = self.window?.rootViewController as? UINavigationController {
             if let firstViewController = navigationController.viewControllers.first as? ListViewController {
-                NoteArrayDataProvider.getInstance().saveNotes(firstViewController.arrayNotes)
+                NoteArrayDataProvider.getInstance().saveNotes(firstViewController.arrayNotes.filter({
+                    !$0.online
+                }))
             }
         }
     }
