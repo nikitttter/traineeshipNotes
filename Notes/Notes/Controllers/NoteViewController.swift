@@ -29,11 +29,7 @@ class NoteViewController: UIViewController {
         setupHeaderContainer()
         setupNoteField()
 
-        if data != nil {
-            isNewNote = false
-        } else {
-            isNewNote = true
-        }
+        isNewNote = data != nil ? false : true
 
         titleTextField.text = data?.title
         noteTextField.text = data?.text
@@ -44,13 +40,11 @@ class NoteViewController: UIViewController {
         view.addSubview(headerContainer)
         headerContainer.translatesAutoresizingMaskIntoConstraints = false
 
-        headerContainer.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor).isActive = true
-        headerContainer.leadingAnchor.constraint(
-            equalTo: view.safeAreaLayoutGuide.leadingAnchor
-        ).isActive = true
-        headerContainer.trailingAnchor.constraint(
-            equalTo: view.safeAreaLayoutGuide.trailingAnchor
-        ).isActive = true
+        NSLayoutConstraint.activate([
+            headerContainer.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
+            headerContainer.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor),
+            headerContainer.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor)
+        ])
 
         headerContainer.addSubview(titleTextField)
         headerContainer.addSubview(dateField)
@@ -64,10 +58,13 @@ class NoteViewController: UIViewController {
             return
         }
         titleTextField.translatesAutoresizingMaskIntoConstraints = false
-        titleTextField.topAnchor.constraint(equalTo: dateField.bottomAnchor, constant: 20.0).isActive = true
-        titleTextField.leadingAnchor.constraint(equalTo: superView.leadingAnchor, constant: 20.0).isActive = true
-        titleTextField.trailingAnchor.constraint(equalTo: superView.trailingAnchor, constant: -70.0).isActive = true
-        titleTextField.bottomAnchor.constraint(equalTo: superView.bottomAnchor).isActive = true
+
+        NSLayoutConstraint.activate([
+            titleTextField.topAnchor.constraint(equalTo: dateField.bottomAnchor, constant: 20.0),
+            titleTextField.leadingAnchor.constraint(equalTo: superView.leadingAnchor, constant: 20.0),
+            titleTextField.trailingAnchor.constraint(equalTo: superView.trailingAnchor, constant: -70.0),
+            titleTextField.bottomAnchor.constraint(equalTo: superView.bottomAnchor)
+        ])
 
         titleTextField.placeholder = NSLocalizedString("noteTitlePlaceHolder", comment: "")
         titleTextField.font = UIFont.boldSystemFont(ofSize: 24.0)
@@ -86,19 +83,12 @@ class NoteViewController: UIViewController {
         view.addSubview(noteTextField)
         noteTextField.translatesAutoresizingMaskIntoConstraints = false
 
-        noteTextField.topAnchor.constraint(equalTo: headerContainer.bottomAnchor, constant: 16.0).isActive = true
-        noteTextField.leadingAnchor.constraint(
-            equalTo: view.safeAreaLayoutGuide.leadingAnchor,
-            constant: 20.0
-        ).isActive = true
-        noteTextField.trailingAnchor.constraint(
-            equalTo: view.safeAreaLayoutGuide.trailingAnchor,
-            constant: -20.0
-        ).isActive = true
-        noteTextField.bottomAnchor.constraint(
-            equalTo: view.safeAreaLayoutGuide.bottomAnchor,
-            constant: -20.0
-        ).isActive = true
+        NSLayoutConstraint.activate([
+            noteTextField.topAnchor.constraint(equalTo: headerContainer.bottomAnchor, constant: 16.0),
+            noteTextField.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 20.0),
+            noteTextField.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -20.0),
+            noteTextField.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -20.0)
+        ])
 
         noteTextField.font = UIFont.systemFont(ofSize: 16.0)
         noteTextField.backgroundColor = view.backgroundColor
@@ -108,11 +98,13 @@ class NoteViewController: UIViewController {
         guard let superView = dateField.superview else {
             return
         }
-
         dateField.translatesAutoresizingMaskIntoConstraints = false
-        dateField.leadingAnchor.constraint(equalTo: superView.leadingAnchor, constant: 20).isActive = true
-        dateField.trailingAnchor.constraint(equalTo: superView.trailingAnchor, constant: -20).isActive = true
-        dateField.topAnchor.constraint(equalTo: superView.topAnchor, constant: 12.0).isActive = true
+
+        NSLayoutConstraint.activate([
+            dateField.leadingAnchor.constraint(equalTo: superView.leadingAnchor, constant: 20),
+            dateField.trailingAnchor.constraint(equalTo: superView.trailingAnchor, constant: -20),
+            dateField.topAnchor.constraint(equalTo: superView.topAnchor, constant: 12.0)
+        ])
 
         dateField.font = UIFont.systemFont(ofSize: 14)
         dateField.textColor = UIColor.systemGray
@@ -161,16 +153,6 @@ class NoteViewController: UIViewController {
         noteTextField.resignFirstResponder()
     }
 
-    private func showErrorAlert(_ text: String) {
-        let alert = UIAlertController(
-            title: NSLocalizedString("error", comment: ""),
-            message: text,
-            preferredStyle: .alert
-        )
-        alert.addAction(UIAlertAction(title: "OK", style: .cancel, handler: nil))
-        present(alert, animated: true, completion: nil)
-    }
-
     private func saveModel() {
         if data == nil {
             data = Note(title: titleTextField.text ?? String(), text: noteTextField.text, date: currentDate)
@@ -185,7 +167,7 @@ class NoteViewController: UIViewController {
         saveModel()
 
         guard !self.isNoteEmpty() else {
-            showErrorAlert(NSLocalizedString("emptyNote", comment: ""))
+            AlertManager.showErrorAlert(from: self, text: NSLocalizedString("emptyNote", comment: ""))
             return
         }
 
