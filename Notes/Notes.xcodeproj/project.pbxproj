@@ -8,6 +8,10 @@
 
 /* Begin PBXBuildFile section */
 		110B006227F1436900ED5FC8 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 110B006427F1436900ED5FC8 /* Localizable.strings */; };
+		118B1E1228022655005D731C /* ListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 118B1E1128022655005D731C /* ListViewController.swift */; };
+		118B1E1828022AA0005D731C /* NoteCellView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 118B1E1728022AA0005D731C /* NoteCellView.swift */; };
+		118B1E1A2802367D005D731C /* PlusButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 118B1E192802367D005D731C /* PlusButton.swift */; };
+		119E76032804501B002A780A /* NoteArrayDataProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 119E76022804501B002A780A /* NoteArrayDataProvider.swift */; };
 		11DACDF727F0AF1100623F11 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11DACDF627F0AF1100623F11 /* AppDelegate.swift */; };
 		11DACDF927F0AF1100623F11 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11DACDF827F0AF1100623F11 /* SceneDelegate.swift */; };
 		11DACDFB27F0AF1100623F11 /* NoteViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11DACDFA27F0AF1100623F11 /* NoteViewController.swift */; };
@@ -19,6 +23,10 @@
 /* Begin PBXFileReference section */
 		110B006327F1436900ED5FC8 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Localizable.strings; sourceTree = "<group>"; };
 		110B006527F1437A00ED5FC8 /* ru */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ru; path = ru.lproj/Localizable.strings; sourceTree = "<group>"; };
+		118B1E1128022655005D731C /* ListViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ListViewController.swift; sourceTree = "<group>"; };
+		118B1E1728022AA0005D731C /* NoteCellView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = NoteCellView.swift; path = Notes/Views/NoteCellView.swift; sourceTree = SOURCE_ROOT; };
+		118B1E192802367D005D731C /* PlusButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlusButton.swift; sourceTree = "<group>"; };
+		119E76022804501B002A780A /* NoteArrayDataProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NoteArrayDataProvider.swift; sourceTree = "<group>"; };
 		11DACDF327F0AF1100623F11 /* Notes.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Notes.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		11DACDF627F0AF1100623F11 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		11DACDF827F0AF1100623F11 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -40,6 +48,24 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		118B1E1328022675005D731C /* Controllers */ = {
+			isa = PBXGroup;
+			children = (
+				11DACDFA27F0AF1100623F11 /* NoteViewController.swift */,
+				118B1E1128022655005D731C /* ListViewController.swift */,
+			);
+			path = Controllers;
+			sourceTree = "<group>";
+		};
+		118B1E16280227BB005D731C /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				118B1E192802367D005D731C /* PlusButton.swift */,
+				118B1E1728022AA0005D731C /* NoteCellView.swift */,
+			);
+			path = Views;
+			sourceTree = "<group>";
+		};
 		11DACDEA27F0AF1100623F11 = {
 			isa = PBXGroup;
 			children = (
@@ -61,8 +87,9 @@
 			children = (
 				11DACDF627F0AF1100623F11 /* AppDelegate.swift */,
 				11DACDF827F0AF1100623F11 /* SceneDelegate.swift */,
-				11DACDFA27F0AF1100623F11 /* NoteViewController.swift */,
 				11EB6AE527F79DF400EE4E6D /* Models */,
+				118B1E16280227BB005D731C /* Views */,
+				118B1E1328022675005D731C /* Controllers */,
 				11DACDFF27F0AF1300623F11 /* Assets.xcassets */,
 				11DACE0127F0AF1300623F11 /* LaunchScreen.storyboard */,
 				110B006427F1436900ED5FC8 /* Localizable.strings */,
@@ -75,6 +102,7 @@
 			isa = PBXGroup;
 			children = (
 				11EB6AE327F79DCF00EE4E6D /* Note.swift */,
+				119E76022804501B002A780A /* NoteArrayDataProvider.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -173,8 +201,12 @@
 			buildActionMask = 2147483647;
 			files = (
 				11DACDFB27F0AF1100623F11 /* NoteViewController.swift in Sources */,
+				118B1E1A2802367D005D731C /* PlusButton.swift in Sources */,
 				11DACDF727F0AF1100623F11 /* AppDelegate.swift in Sources */,
 				11DACDF927F0AF1100623F11 /* SceneDelegate.swift in Sources */,
+				119E76032804501B002A780A /* NoteArrayDataProvider.swift in Sources */,
+				118B1E1228022655005D731C /* ListViewController.swift in Sources */,
+				118B1E1828022AA0005D731C /* NoteCellView.swift in Sources */,
 				11EB6AE427F79DCF00EE4E6D /* Note.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
