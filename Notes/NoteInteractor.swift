@@ -10,7 +10,7 @@ import Foundation
 protocol NoteBusinesLogic {
     func provideNoteDetail()
     func updateNoteDetail(request: NoteDetails.UpdateNoteModel.Request)
-    func saveNotes(request: NoteDetails.SaveNoteModel.Request)
+    func saveNote(request: NoteDetails.SaveNoteModel.Request)
 }
 
 protocol NoteDataStore {
@@ -28,7 +28,7 @@ class NoteInteractor: NoteDataStore {
         self.presenter = presenter
     }
 
-    private func prepareNote(title: String?, text: String?) {
+    private func saveNote(title: String?, text: String?) {
         let idNote = note?.id
 
         note = Note(
@@ -47,7 +47,7 @@ class NoteInteractor: NoteDataStore {
 
 extension NoteInteractor: NoteBusinesLogic {
     func updateNoteDetail(request: NoteDetails.UpdateNoteModel.Request) {
-        prepareNote(title: request.noteHeader, text: request.noteText)
+        saveNote(title: request.noteHeader, text: request.noteText)
 
         if note!.isEmpty == false {
             provideNoteDetail()
@@ -67,8 +67,7 @@ extension NoteInteractor: NoteBusinesLogic {
         presenter.presentNoteDetails(response: response)
     }
 
-    func saveNotes(request: NoteDetails.SaveNoteModel.Request) {
-        prepareNote(title: request.noteHeader, text: request.noteText)
-        presenter.disappearView()
+    func saveNote(request: NoteDetails.SaveNoteModel.Request) {
+        saveNote(title: request.noteHeader, text: request.noteText)
     }
 }

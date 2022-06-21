@@ -14,7 +14,8 @@ enum ListNotesAssembly {
         if listViewController == nil {
             let presenter = ListNotesPresenter()
             let worker = Worker()
-            let interactor = ListNotesInteractor(presenter: presenter, worker: worker)
+            let dataProvider = NoteArrayDataProvider.getInstance()
+            let interactor = ListNotesInteractor(presenter: presenter, worker: worker, dataProvider: dataProvider)
             let router = ListNotesRouter(interactor: interactor)
             let viewController = ListNotesViewController(interactor: interactor, router: router)
 
