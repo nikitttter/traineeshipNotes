@@ -21,15 +21,23 @@ enum NetworkError: Error {
 }
 
 class Worker: WorkerType {
+    init () {
+        print("class Worker has been initialized")
+    }
+
+    deinit {
+        print("class Worker has been deallocated")
+    }
     private lazy var session: URLSession = {
        return  URLSession(configuration: .default)
     }()
 
+    // weak здесь необходим так как в ListViewController есть сильная ссылка на на данный класс
     weak var delegate: WorkerDelegate?
 
     func fetchData() {
         do {
-            let task = session.dataTask(with: try createURLRequest()) { [weak self] data, _, error in
+            let task = session.dataTask(with: try createURLRequest()) { data, _, error in
                 if let error = error {
                     print(error)
                     return
@@ -40,7 +48,7 @@ class Worker: WorkerType {
                         let fetchedNotes = try JSONDecoder().decode([Note].self, from: data)
 
                         DispatchQueue.main.async {
-                            self?.delegate?.updateInterface(notes: fetchedNotes)
+                            self.delegate?.updateInterface(notes: fetchedNotes)
                         }
                     } catch let error as NSError {
                         print(error.localizedDescription)
@@ -67,10 +75,10 @@ class Worker: WorkerType {
 
         urlCoponents.scheme = "https"
         urlCoponents.host = "firebasestorage.googleapis.com"
-        urlCoponents.path = "/v0/b/ios-test-ce687.appspot.com/o/Empty.json"
+        urlCoponents.path = "/v0/b/ios-test-ce687.appspot.com/o/lesson8.json"
         urlCoponents.queryItems = [
             URLQueryItem(name: "alt", value: "media"),
-            URLQueryItem(name: "token", value: "d07f7d4a-141e-4ac5-a2d2-cc936d4e6f18")
+            URLQueryItem(name: "token", value: "215055df-172d-4b98-95a0-b353caca1424")
         ]
 
         return urlCoponents.url

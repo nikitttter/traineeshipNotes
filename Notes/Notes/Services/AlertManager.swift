@@ -8,6 +8,14 @@
 import UIKit
 
 class AlertManager {
+    init() {
+        print("class AlertManager has been initialized")
+    }
+
+    deinit {
+        print("class AlertManager has been deallocated")
+    }
+
     static func showErrorAlert(
         from view: UIViewController,
         text: String,

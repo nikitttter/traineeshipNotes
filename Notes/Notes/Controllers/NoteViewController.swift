@@ -19,7 +19,22 @@ class NoteViewController: UIViewController {
     private let dateFormatted = DateFormatter()
     private var isNewNote: Bool!
     var data: Note?
-    weak var delegate: ListViewController?
+    //  можно не использовать weak, так как в ListViewController нет ссылки на данный класс
+    //  и следовательно не возникает проблемы цикла сильных ссылок
+    var delegate: ListViewController?
+
+    override init(nibName nibNameOrNil: String?, bundle nibBundleOrNil: Bundle?) {
+        super.init(nibName: nibNameOrNil, bundle: nibBundleOrNil)
+        print("class NoteViewController has been initialized")
+    }
+
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+
+    deinit {
+        print("class NoteViewController has been deallocated")
+    }
 
     override func viewDidLoad() {
         super.viewDidLoad()
