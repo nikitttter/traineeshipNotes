@@ -7,6 +7,11 @@
 
 import Foundation
 
+protocol NoteStorage {
+    func getSavedNotes() -> [Note]?
+    func saveNotes(_ notes: [Note])
+}
+
 class NoteArrayDataProvider {
     private let noteArrayKey = "notesArray"
     private static  let dateFormat = "dd.MM.yyyy EEEE HH:mm"
@@ -27,7 +32,11 @@ class NoteArrayDataProvider {
         instance?.dateFormatter.dateFormat = dateFormat
         return instance!
     }
+}
 
+// MARK: NoteStorage protocol
+
+extension NoteArrayDataProvider: NoteStorage {
     func getSavedNotes() -> [Note]? {
         let decoder = JSONDecoder()
         var arrayNotes = [Note]()

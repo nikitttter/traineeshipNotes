@@ -31,8 +31,8 @@ class ListNotesRouter: ListNotesDataPassing {
         idNote: Int?,
         destination: inout NoteDataStore
     ) {
-        guard idNote != nil, source.notes != nil else { return }
-        destination.note = source.notes![idNote!]
+        guard idNote != nil, idNote! >= 0, idNote! < source.notes.count else { return }
+        destination.note = source.notes[idNote!]
     }
 }
 

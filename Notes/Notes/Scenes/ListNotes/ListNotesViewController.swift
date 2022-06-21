@@ -9,7 +9,7 @@ import UIKit
 
 protocol ListNotesDisplayLogic: AnyObject {
     func displayData(_ viewModel: ListNotes.FetchNotes.ViewModel)
-    func updateData(_ viewModel: ListNotes.UpdatedNotes.ViewModel)
+    func updateKeepData(_ viewModel: ListNotes.DeleteNotes.ViewModel)
     func showAlert(_ viewModel: ListNotes.AlertErrors.ViewModel)
 }
 
@@ -18,7 +18,7 @@ class ListNotesViewController: UIViewController {
 
     private let plusButton = PlusButton()
     private let rightBarButton = SelectBarButtonItem()
-    private let tableView = UITableView()
+    var tableView = UITableView()
 
     // MARK: configure vars
 
@@ -32,11 +32,11 @@ class ListNotesViewController: UIViewController {
     // MARK: Interactor, router
 
     private let interactor: ListNotesBusinesLogic
-    let router: (ListNotesRoutingLogic & ListNotesDataPassing)
+    let router: (ListNotesRoutingLogic & ListNotesDataPassing)?
 
     // MARK: object lifecycle
 
-    init(interactor: ListNotesBusinesLogic, router: ListNotesRoutingLogic & ListNotesDataPassing) {
+    init(interactor: ListNotesBusinesLogic, router: (ListNotesRoutingLogic & ListNotesDataPassing)?) {
         self.interactor = interactor
         self.router = router
         super.init(nibName: nil, bundle: nil)
@@ -63,12 +63,13 @@ class ListNotesViewController: UIViewController {
             name: UIApplication.willResignActiveNotification,
             object: nil
         )
+        fetchNotes()
     }
 
     override func viewWillAppear(_ animated: Bool) {
         self.navigationItem.title = NSLocalizedString("listNotes", comment: "")
         plusButton.isHidden = true
-        fetchNotes()
+        getNewNote()
     }
 
     override func viewDidAppear(_ animated: Bool) {
@@ -173,16 +174,21 @@ class ListNotesViewController: UIViewController {
 
     // MARK: Actions
 
-    private func fetchNotes() {
-        interactor.fetchNotes()
+    private func getNewNote() {
+        interactor.fetchNotes(.init(getFromStorage: false))
     }
 
-    private func deleteNotes(ids: ListNotes.UpdatedNotes.Request) {
+    private func fetchNotes() {
+        interactor.fetchNotes(.init(getFromStorage: true))
+        interactor.fetchOnlineNotes()
+    }
+
+    private func deleteNotes(ids: ListNotes.DeleteNotes.Request) {
         interactor.deleteNotes(by: ids)
     }
 
     private func routeToNoteViewController(id: Int?) {
-        router.routeToNoteDetailsForEditing(at: id)
+        router?.routeToNoteDetailsForEditing(at: id)
     }
 
     @objc func saveNotes() {
@@ -218,7 +224,7 @@ extension ListNotesViewController: UITableViewDataSource {
         forRowAt indexPath: IndexPath
     ) {
         if editingStyle == .delete {
-            let request = ListNotes.UpdatedNotes.Request(id: indexPath.row)
+            let request = ListNotes.DeleteNotes.Request(id: indexPath.row)
             deleteNotes(ids: request)
             tableView.deleteRows(at: [indexPath], with: .left)
         }
@@ -261,7 +267,7 @@ extension ListNotesViewController: ListNotesDisplayLogic {
         tableView.reloadData()
     }
 
-    func updateData(_ viewModel: ListNotes.UpdatedNotes.ViewModel) {
+    func updateKeepData(_ viewModel: ListNotes.DeleteNotes.ViewModel) {
         displayedNotes = viewModel.updatedNotes
     }
 

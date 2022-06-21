@@ -11,7 +11,6 @@ import Foundation
 protocol NoteDisplayLogic: AnyObject {
     func displayNoteDetails(viewModel: NoteDetails.ShowNoteDetails.ViewModel)
     func showAlert(viewModel: NoteDetails.UpdateNoteModel.ViewModel)
-    func routeToNotesList()
 }
 
 class NoteDetailsViewController: UIViewController {
@@ -214,7 +213,8 @@ class NoteDetailsViewController: UIViewController {
             noteHeader: titleTextField.text,
             noteText: noteTextField.text
         )
-        interactor.saveNotes(request: request)
+        interactor.saveNote(request: request)
+        router.routeToNotesList()
     }
 }
 
@@ -244,9 +244,5 @@ extension NoteDetailsViewController: NoteDisplayLogic {
 
     func showAlert(viewModel: NoteDetails.UpdateNoteModel.ViewModel) {
         AlertManager.showErrorAlert(from: self, text: viewModel.message)
-    }
-
-    func routeToNotesList() {
-        router.routeToNotesList()
     }
 }
